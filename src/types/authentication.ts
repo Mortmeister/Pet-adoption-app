@@ -12,3 +12,12 @@ export interface AuthContextType {
   login: (user: AuthUser) => void;
   logout: () => void;
 }
+
+export interface RegisterFormData {
+  name: string;
+  email: string;
+  password: string;
+  bio?: string;
+  avatar?: { url: string; alt?: string };
+  banner?: { url: string; alt?: string };
+}
