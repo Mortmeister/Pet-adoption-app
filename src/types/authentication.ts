@@ -21,3 +21,18 @@ export interface RegisterFormData {
   avatar?: { url: string; alt?: string };
   banner?: { url: string; alt?: string };
 }
+
+export type Login = {
+  email: string;
+  password: string;
+};
+
+export type LoginResponse = {
+  data: {
+    name: string;
+    email: string;
+    avatar?: { url: string; alt?: string };
+    banner?: { url: string; alt?: string };
+    accessToken: string;
+  };
+};
