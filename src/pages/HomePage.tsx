@@ -1,6 +1,7 @@
 import { fetchPets } from "../services/pets";
 import { useEffect, useState } from "react";
 import { type Pet } from "../types/pets";
+import { PetCard } from "../components/layout/PetCard";
 
 export default function HomePage() {
   const [pets, setPets] = useState<Pet[]>([]);
@@ -41,16 +42,10 @@ export default function HomePage() {
   }
 
   return (
-    <>
-      <p>Home page</p>
-      <ul>
-        {pets.map((pet) => (
-          <li key={pet.id}>
-            {pet.name} - {pet.breed}
-            <img src={pet.image?.url} alt={pet.image?.alt} />
-          </li>
-        ))}
-      </ul>
-    </>
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3">
+      {pets.map((venue) => (
+        <PetCard key={venue.id} pet={venue} />
+      ))}
+    </div>
   );
 }
