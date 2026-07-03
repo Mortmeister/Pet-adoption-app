@@ -1,0 +1,48 @@
+import { PawPrint } from "lucide-react";
+import { useNavigate } from "react-router";
+import { type Pet } from "../../types/pets";
+
+interface PetCardProps {
+  pet: Pet;
+}
+
+export function PetCard({ pet }: PetCardProps) {
+  const navigate = useNavigate();
+
+  return (
+    <div
+      className={`flex flex-col overflow-hidden rounded-xl border border-(--color-border) bg-(--color-surface) shadow-sm transition-all duration-200 hover:scale-101`}
+    >
+      <div className="flex aspect-video items-center justify-center overflow-hidden bg-(--color-accent)">
+        {pet.image?.url ? (
+          <img
+            src={pet.image.url}
+            alt={pet.image.alt}
+            className="h-full w-full object-cover"
+          />
+        ) : (
+          <PawPrint size={40} className="text-(--color-text) opacity-60" />
+        )}
+      </div>
+
+      <div className="flex flex-1 flex-col gap-2 p-4">
+        <div>
+          <p className="font-heading text-base font-semibold text-(--color-text)">
+            {pet.name}
+          </p>
+
+          <p className="text-xs text-(--color-text-muted)">
+            {pet.breed} · {pet.age} yr{pet.age !== 1 ? "s" : ""}
+          </p>
+        </div>
+
+        <button
+          onClick={() => navigate(`/pet/${pet.id}`)}
+          className="mt-auto w-full rounded-lg bg-(--color-primary) px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-(--color-primary-hover)"
+        >
+          View {pet.name}
+        </button>
+      </div>
+    </div>
+  );
+}
