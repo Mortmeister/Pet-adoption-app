@@ -1,15 +1,60 @@
 import { fetchPets, fetchAllPets } from "../services/pets";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { type Pet } from "../types/pets";
 import { PetCard } from "../components/layout/PetCard";
-import { PawPrint, Heart, Search } from "lucide-react";
+import {
+  PawPrint,
+  Heart,
+  Search,
+  Dog,
+  Cat,
+  Rabbit,
+  Bird,
+  Worm,
+  Snail,
+  type LucideIcon,
+} from "lucide-react";
 import { HomePageSkeleton } from "../components/layout/HomePageSkeleton";
+import { useDebouncedValue } from "../hooks/useDebounce";
+import { filterPets } from "../utils/filterPets";
 
+const SPECIES_FILTERS: { label: string; icon: LucideIcon }[] = [
+  { label: "All", icon: PawPrint },
+  { label: "Dogs", icon: Dog },
+  { label: "Cats", icon: Cat },
+  { label: "Hamster", icon: Rabbit },
+  { label: "Birds", icon: Bird },
+  { label: "Snake", icon: Worm },
+  { label: "Snail", icon: Snail },
+];
+
+const SIZE_FILTERS = ["All", "Small", "Medium", "Large"];
+
+function filterButtonClass(active: boolean) {
+  return [
+    "flex cursor-pointer items-center gap-1.5 rounded-full border-[1.5px] px-3.5 py-1.25 text-[13px] font-medium transition-all duration-150",
+    active
+      ? "border-(--color-primary) bg-(--color-primary) text-white"
+      : "border-(--color-border) bg-(--color-surface) text-(--color-text)",
+  ].join(" ");
+}
 export default function HomePage() {
   const [pets, setPets] = useState<Pet[]>([]);
   const [allPets, setAllPets] = useState<Pet[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [speciesFilter, setSpeciesFilter] = useState("All");
+  const [sizeFilter, setSizeFilter] = useState("All");
+  const isFiltered =
+    speciesFilter !== "All" || sizeFilter !== "All" || searchQuery !== "";
+
+  const debouncedSearchQuery = useDebouncedValue(searchQuery, 300);
+
+  const filteredPets = useMemo(
+    () => filterPets(allPets, debouncedSearchQuery, speciesFilter, sizeFilter),
+    [allPets, debouncedSearchQuery, speciesFilter, sizeFilter],
+  );
 
   useEffect(() => {
     async function loadPets() {
@@ -54,8 +99,7 @@ export default function HomePage() {
   function lastListedPet(): Pet | null {
     if (pets.length === 0) return null;
     const sortedPets = [...pets].sort(
-      (a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+      (a, b) => new Date(b.created).getTime() - new Date(a.created).getTime(),
     );
     return sortedPets[0];
   }
@@ -193,6 +237,8 @@ export default function HomePage() {
               />
               <input
                 type="text"
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.target.value)}
                 placeholder="Search by name or breed..."
                 className="w-full rounded-lg border border-(--color-border) bg-(--color-surface) py-2.5 pl-10 pr-3.5 text-sm text-(--color-text) outline-none transition-colors focus:border-(--color-primary)"
               />
@@ -201,6 +247,52 @@ export default function HomePage() {
               <Search size={14} />
               Search
             </button>
+          </div>
+
+          <div className="flex flex-wrap gap-2 mb-4">
+            {SPECIES_FILTERS.map(({ label, icon: Icon }) => {
+              const active = speciesFilter === label;
+
+              return (
+                <button
+                  key={label}
+                  type="button"
+                  onClick={() => setSpeciesFilter(label)}
+                  className={filterButtonClass(active)}
+                >
+                  <Icon size={14} />
+                  {label}
+                </button>
+              );
+            })}
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {SIZE_FILTERS.map((size) => {
+              const active = sizeFilter === size;
+              return (
+                <button
+                  key={size}
+                  type="button"
+                  onClick={() => setSizeFilter(size)}
+                  className={filterButtonClass(active)}
+                >
+                  {size}
+                </button>
+              );
+            })}
+            {isFiltered && (
+              <button
+                type="button"
+                onClick={() => {
+                  setSpeciesFilter("All");
+                  setSizeFilter("All");
+                  setSearchQuery("");
+                }}
+                className="flex cursor-pointer items-center gap-1.5 rounded-full border-[1.5px] border-(--color-border) px-3.5 py-1.25 text-[13px] font-medium text-(--color-text-muted) transition-all duration-150 hover:border-(--color-primary) hover:text-(--color-primary)"
+              >
+                Clear filters
+              </button>
+            )}
           </div>
         </div>
       </section>
@@ -217,15 +309,21 @@ export default function HomePage() {
               </span>
             </div>
             <p className="text-[13px] text-(--color-text-muted)">
-              Showing {pets.length} of {allPets.length} pets
+              Showing {filteredPets.length} of {allPets.length} pets
             </p>
           </div>
 
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {pets.map((pet) => (
-              <PetCard key={pet.id} pet={pet} />
-            ))}
-          </div>
+          {filteredPets.length === 0 ? (
+            <p className="py-12 text-center text-(--color-text-muted)">
+              No pets match your search.
+            </p>
+          ) : (
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {filteredPets.map((pet) => (
+                <PetCard key={pet.id} pet={pet} />
+              ))}
+            </div>
+          )}
         </div>
       </section>
     </div>
