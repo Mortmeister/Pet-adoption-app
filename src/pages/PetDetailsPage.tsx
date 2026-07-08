@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router";
-import { PawPrint, Share2, Heart } from "lucide-react";
+import { PawPrint, Share2, Heart, Check } from "lucide-react";
 import { PetCard } from "../components/layout/PetCard";
 import { fetchAllPets, fetchPetById } from "../services/pets";
 import { type Pet } from "../types/pets";
@@ -22,6 +22,7 @@ export default function PetDetailsPage() {
   const [pet, setPet] = useState<Pet | null>(null);
   const [relatedPets, setRelatedPets] = useState<Pet[]>([]);
   const [loading, setLoading] = useState(true);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     if (!id) {
@@ -60,6 +61,12 @@ export default function PetDetailsPage() {
 
     loadPetDetails();
   }, [id]);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(window.location.href);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   if (loading) {
     return (
@@ -122,10 +129,11 @@ export default function PetDetailsPage() {
               </h1>
               <button
                 type="button"
+                onClick={handleCopy}
                 title="Copy link"
                 className="flex shrink-0 items-center rounded-lg border-[1.5px] border-(--color-border) bg-transparent p-2 text-(--color-text-muted) transition-colors hover:bg-(--color-surface)"
               >
-                <Share2 size={16} />
+                {copied ? <Check size={16} /> : <Share2 size={16} />}
               </button>
             </div>
 
