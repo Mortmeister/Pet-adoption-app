@@ -11,3 +11,7 @@ export async function fetchPets(page = 1, limit = 12) {
 export async function fetchAllPets() {
   return get<PetsResponse>(`/pets`, null);
 }
+
+export async function fetchPetById(id: string) {
+  return get<PetsResponse>(`/pets/${id}`, null);
+}
