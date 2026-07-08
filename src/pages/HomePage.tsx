@@ -12,6 +12,7 @@ import {
   Bird,
   Worm,
   Snail,
+  ArrowUpDown,
   type LucideIcon,
 } from "lucide-react";
 import { HomePageSkeleton } from "../components/layout/HomePageSkeleton";
@@ -28,6 +29,9 @@ const SPECIES_FILTERS: { label: string; icon: LucideIcon }[] = [
   { label: "Snail", icon: Snail },
 ];
 
+const STATUS_FILTERS = ["All", "available", "adopted"] as const;
+type StatusFilter = (typeof STATUS_FILTERS)[number];
+
 const SIZE_FILTERS = ["All", "Small", "Medium", "Large"];
 
 function filterButtonClass(active: boolean) {
@@ -38,6 +42,7 @@ function filterButtonClass(active: boolean) {
       : "border-(--color-border) bg-(--color-surface) text-(--color-text)",
   ].join(" ");
 }
+
 export default function HomePage() {
   const [pets, setPets] = useState<Pet[]>([]);
   const [allPets, setAllPets] = useState<Pet[]>([]);
@@ -46,25 +51,57 @@ export default function HomePage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [speciesFilter, setSpeciesFilter] = useState("All");
   const [sizeFilter, setSizeFilter] = useState("All");
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>("All");
+  const [sortDate, setSortDate] = useState<"newest" | "oldest">("newest");
   const isFiltered =
-    speciesFilter !== "All" || sizeFilter !== "All" || searchQuery !== "";
+    speciesFilter !== "All" ||
+    sizeFilter !== "All" ||
+    searchQuery !== "" ||
+    statusFilter !== "All" ||
+    sortDate !== "newest";
 
   const debouncedSearchQuery = useDebouncedValue(searchQuery, 300);
 
   const filteredPets = useMemo(
-    () => filterPets(allPets, debouncedSearchQuery, speciesFilter, sizeFilter),
-    [allPets, debouncedSearchQuery, speciesFilter, sizeFilter],
+    () =>
+      filterPets(
+        allPets,
+        debouncedSearchQuery,
+        speciesFilter,
+        sizeFilter,
+        statusFilter,
+        sortDate,
+      ),
+    [
+      allPets,
+      debouncedSearchQuery,
+      speciesFilter,
+      sizeFilter,
+      statusFilter,
+      sortDate,
+    ],
   );
 
   useEffect(() => {
     async function loadPets() {
       try {
-        const response = await fetchPets();
-        if (!response) {
+        const [petsResponse, allPetsResponse] = await Promise.all([
+          fetchPets(),
+          fetchAllPets(),
+        ]);
+
+        if (!petsResponse && !allPetsResponse) {
           setError("No pets found.");
           return;
         }
-        setPets(response.data);
+
+        if (petsResponse?.data) {
+          setPets(petsResponse.data);
+        }
+
+        if (allPetsResponse?.data) {
+          setAllPets(allPetsResponse.data);
+        }
       } catch (error) {
         setError(
           error instanceof Error ? error.message : "An unknown error occurred.",
@@ -249,7 +286,7 @@ export default function HomePage() {
             </button>
           </div>
 
-          <div className="flex flex-wrap gap-2 mb-4">
+          <div className="mb-4 flex flex-wrap gap-2">
             {SPECIES_FILTERS.map(({ label, icon: Icon }) => {
               const active = speciesFilter === label;
 
@@ -266,9 +303,11 @@ export default function HomePage() {
               );
             })}
           </div>
-          <div className="flex flex-wrap gap-2">
+
+          <div className="mb-4 flex flex-wrap gap-2">
             {SIZE_FILTERS.map((size) => {
               const active = sizeFilter === size;
+
               return (
                 <button
                   key={size}
@@ -280,20 +319,58 @@ export default function HomePage() {
                 </button>
               );
             })}
-            {isFiltered && (
-              <button
-                type="button"
-                onClick={() => {
-                  setSpeciesFilter("All");
-                  setSizeFilter("All");
-                  setSearchQuery("");
-                }}
-                className="flex cursor-pointer items-center gap-1.5 rounded-full border-[1.5px] border-(--color-border) px-3.5 py-1.25 text-[13px] font-medium text-(--color-text-muted) transition-all duration-150 hover:border-(--color-primary) hover:text-(--color-primary)"
-              >
-                Clear filters
-              </button>
-            )}
           </div>
+
+          <div className="mb-4 flex flex-wrap gap-2">
+            {STATUS_FILTERS.map((status) => {
+              const active = statusFilter === status;
+              const label =
+                status === "All"
+                  ? "All status"
+                  : status.charAt(0).toUpperCase() + status.slice(1);
+
+              return (
+                <button
+                  key={status}
+                  type="button"
+                  onClick={() => setStatusFilter(status)}
+                  className={filterButtonClass(active)}
+                >
+                  {label}
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="mb-4 flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={() =>
+                setSortDate((current) =>
+                  current === "newest" ? "oldest" : "newest",
+                )
+              }
+              className="flex cursor-pointer items-center gap-1.5 rounded-full border-[1.5px] border-(--color-border) bg-(--color-surface) px-3.5 py-1.25 text-[13px] font-medium text-(--color-text) transition-all duration-150"
+            >
+              <ArrowUpDown size={13} />
+              {sortDate === "newest" ? "Newest first" : "Oldest first"}
+            </button>
+          </div>
+          {isFiltered && (
+            <button
+              type="button"
+              onClick={() => {
+                setSpeciesFilter("All");
+                setSizeFilter("All");
+                setSearchQuery("");
+                setStatusFilter("All");
+                setSortDate("newest");
+              }}
+              className="flex cursor-pointer items-center gap-1.5 rounded-full border-[1.5px] border-(--color-border) px-3.5 py-1.25 text-[13px] font-medium text-(--color-text-muted) transition-all duration-150 hover:border-(--color-primary) hover:text-(--color-primary)"
+            >
+              Clear filters
+            </button>
+          )}
         </div>
       </section>
 
@@ -305,7 +382,7 @@ export default function HomePage() {
                 Available pets
               </h2>
               <span className="rounded-md bg-(--color-accent) px-2.5 py-1 text-xs font-medium text-(--color-text)">
-                {allPets.length}
+                {filteredPets.length}
               </span>
             </div>
             <p className="text-[13px] text-(--color-text-muted)">
