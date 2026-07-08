@@ -5,6 +5,7 @@ import HomePage from "./src/pages/HomePage";
 import LoginPage from "./src/pages/authentication/LoginPage";
 import RegisterPage from "./src/pages/authentication/RegisterPage";
 import ProfilePage from "./src/pages/profile/ProfilePage";
+import PetDetailsPage from "./src/pages/PetDetailsPage";
 
 export const router = createBrowserRouter([
   {
@@ -14,6 +15,7 @@ export const router = createBrowserRouter([
       { index: true, element: <HomePage /> },
       { path: "auth/login", element: <LoginPage /> },
       { path: "auth/register", element: <RegisterPage /> },
+      { path: "pet/:id", element: <PetDetailsPage /> },
 
       {
         element: <AuthGuard />,
