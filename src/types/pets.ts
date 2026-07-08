@@ -5,6 +5,7 @@ export type Pet = {
   breed: string;
   age: number;
   gender: string;
+  size: string;
   description: string;
   adoptionStatus: string;
   location: string;
