@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { type Pet } from "../types/pets";
 import { PetCard } from "../components/layout/PetCard";
 import { PawPrint, Heart, Search } from "lucide-react";
+import { HomePageSkeleton } from "../components/layout/HomePageSkeleton";
 
 export default function HomePage() {
   const [pets, setPets] = useState<Pet[]>([]);
@@ -86,7 +87,7 @@ export default function HomePage() {
   const getAvailablePetsLength = getAvailablePets();
 
   if (loading) {
-    return <p>Loading...</p>;
+    return <HomePageSkeleton />;
   }
 
   if (error) {
