@@ -33,6 +33,18 @@ h5,
 h6 {
   font-family: "Fraunces", serif;
 }
+h1 {
+  font-size: 3.5rem;
+} /* 44px */
+h2 {
+  font-size: 2rem;
+} /* 32px */
+h3 {
+  font-size: 1.375rem;
+} /* 22px */
+h4 {
+  font-size: 1.125rem;
+} /* 18px */
 
 a.active {
   color: var(--color-primary);
@@ -47,7 +59,7 @@ a.active {
   @apply inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-all duration-150 cursor-pointer;
   font-family: "Work Sans", sans-serif;
   font-size: 0.875rem;
-  padding: 0.625rem 1.25rem;
+  padding: 0.825rem 1.25rem;
   line-height: 1;
   border: 0;
 }

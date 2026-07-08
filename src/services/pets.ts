@@ -8,3 +8,6 @@ export async function fetchPets(page = 1, limit = 12) {
     null,
   );
 }
+export async function fetchAllPets() {
+  return get<PetsResponse>(`/pets`, null);
+}
