@@ -30,16 +30,34 @@ function matchesSize(pet: Pet, sizeFilter: string): boolean {
   return pet.size.toLowerCase() === sizeFilter.toLowerCase();
 }
 
+function matchesStatus(pet: Pet, statusFilter: string): boolean {
+  if (statusFilter === "All") return true;
+
+  return pet.adoptionStatus.toLowerCase() === statusFilter.toLowerCase();
+}
+
+export type SortDate = "newest" | "oldest";
+
 export function filterPets(
   pets: Pet[],
   searchQuery: string,
   speciesFilter: string,
   sizeFilter: string,
+  statusFilter: string,
+  sortDate: SortDate,
 ): Pet[] {
-  return pets.filter(
-    (pet) =>
-      matchesSearch(pet, searchQuery) &&
-      matchesSpecies(pet, speciesFilter) &&
-      matchesSize(pet, sizeFilter),
-  );
+  return pets
+    .filter(
+      (pet) =>
+        matchesSearch(pet, searchQuery) &&
+        matchesSpecies(pet, speciesFilter) &&
+        matchesSize(pet, sizeFilter) &&
+        matchesStatus(pet, statusFilter),
+    )
+    .sort((a, b) => {
+      const aTime = new Date(a.created).getTime();
+      const bTime = new Date(b.created).getTime();
+
+      return sortDate === "newest" ? bTime - aTime : aTime - bTime;
+    });
 }
