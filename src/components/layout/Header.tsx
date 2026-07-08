@@ -35,7 +35,7 @@ export default function Header() {
           {isLoggedIn ? (
             <>
               <div>
-                <NavLink to="/profile">Add Pet</NavLink>
+                <NavLink to="/manage/pets/create">Add Pet</NavLink>
               </div>
               <div>
                 <NavLink to="/">Profile</NavLink>
