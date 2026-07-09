@@ -8,14 +8,24 @@ import { type Pet } from "../../types/pets";
 import { updatePet } from "../../services/pets";
 import { useAuth } from "../../hooks/useAuth";
 import { ErrorModal } from "../../components/modal/ErrorModal";
+import { ConfirmModal } from "../../components/modal/ConfirmModal";
 
 export default function EditPetPage() {
   const [loading, setLoading] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [pendingData, setPendingData] = useState<CreatePetFormData | null>(
+    null,
+  );
   const [error, setError] = useState<string | null>(null);
   const [pet, setPet] = useState<Pet | null>(null);
   const { id } = useParams();
   const { user } = useAuth();
   const navigate = useNavigate();
+
+  const handleOpenConfirm = (data: CreatePetFormData) => {
+    setPendingData(data);
+    setShowConfirmModal(true);
+  };
 
   const {
     register,
@@ -98,6 +108,7 @@ export default function EditPetPage() {
         user?.accessToken,
         id,
       );
+      setShowConfirmModal(false);
       navigate(`/pet/${id}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to update pet");
@@ -125,7 +136,7 @@ export default function EditPetPage() {
 
       {error && <ErrorModal message={error} onClose={() => setError(null)} />}
 
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(handleOpenConfirm)}>
         <div className="flex flex-col gap-8 md:flex-row">
           <div className="flex flex-col gap-4 md:shrink-0 md:basis-[55%]">
             <div className="flex gap-4">
@@ -368,6 +379,16 @@ export default function EditPetPage() {
           </div>
         </div>
       </form>
+      {showConfirmModal && pendingData && (
+        <ConfirmModal
+          title={`Are you sure you want to edit ${pendingData.name}?`}
+          message="Please confirm that all information is correct before submitting."
+          confirmText="Yes, post"
+          loading={loading}
+          onConfirm={() => onSubmit(pendingData)}
+          onCancel={() => setShowConfirmModal(false)}
+        />
+      )}
     </div>
   );
 }

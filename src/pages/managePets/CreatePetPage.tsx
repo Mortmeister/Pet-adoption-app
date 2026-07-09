@@ -6,12 +6,22 @@ import { type CreatePetFormData } from "../../types/pets";
 import { useAuth } from "../../hooks/useAuth";
 import { createPet } from "../../services/pets";
 import { ErrorModal } from "../../components/modal/ErrorModal";
+import { ConfirmModal } from "../../components/modal/ConfirmModal";
 
 export default function CreatePetPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [pendingData, setPendingData] = useState<CreatePetFormData | null>(
+    null,
+  );
+
+  const handleOpenConfirm = (data: CreatePetFormData) => {
+    setPendingData(data);
+    setShowConfirmModal(true);
+  };
 
   const {
     register,
@@ -53,6 +63,7 @@ export default function CreatePetPage() {
 
         user.accessToken,
       );
+      setShowConfirmModal(false);
       navigate(`/pet/${response?.data.id}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
@@ -80,7 +91,7 @@ export default function CreatePetPage() {
 
       {error && <ErrorModal message={error} onClose={() => setError(null)} />}
 
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(handleOpenConfirm)}>
         <div className="flex flex-col gap-8 md:flex-row">
           <div className="flex flex-col gap-4 md:shrink-0 md:basis-[55%]">
             <div className="flex gap-4">
@@ -323,6 +334,17 @@ export default function CreatePetPage() {
           </div>
         </div>
       </form>
+
+      {showConfirmModal && pendingData && (
+        <ConfirmModal
+          title={`Are you sure you want to post ${pendingData.name}?`}
+          message="Please confirm that all information is correct before submitting."
+          confirmText="Yes, post"
+          loading={loading}
+          onConfirm={() => onSubmit(pendingData)}
+          onCancel={() => setShowConfirmModal(false)}
+        />
+      )}
     </div>
   );
 }

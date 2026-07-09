@@ -1,4 +1,4 @@
-import { get, post, put } from "./api";
+import { get, post, put, del } from "./api";
 
 import { type PetsResponse, type CreatePetPayload } from "../types/pets";
 
@@ -25,4 +25,7 @@ export async function updatePet(
   id: string,
 ) {
   return put<PetsResponse>(`/pets/${id}`, data, token);
+}
+export async function deletePet(id: string, token: string) {
+  return del(`/pets/${id}`, token);
 }
