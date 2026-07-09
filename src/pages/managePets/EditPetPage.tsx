@@ -20,6 +20,7 @@ export default function EditPetPage() {
     register,
     reset,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm<CreatePetFormData>({
     mode: "onBlur",
@@ -27,6 +28,9 @@ export default function EditPetPage() {
       size: "Medium",
     },
   });
+
+  const imageUrl = watch("image.url");
+
   useEffect(() => {
     if (!id) {
       setLoading(false);
@@ -361,7 +365,9 @@ export default function EditPetPage() {
           </div>
 
           <div className="flex flex-1 flex-col gap-4">
-            <div className="flex min-h-50 flex-col items-center justify-center overflow-hidden rounded-xl border border-dashed border-(--color-border) bg-[#fdfaf5] p-6"></div>
+            <div className="flex min-h-50 flex-col items-center justify-center overflow-hidden rounded-xl border border-dashed border-(--color-border) bg-[#fdfaf5] p-6">
+              {imageUrl && <img src={imageUrl} alt="" />}
+            </div>
           </div>
         </div>
       </form>

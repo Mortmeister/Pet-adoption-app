@@ -15,6 +15,7 @@ export default function CreatePetPage() {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm<CreatePetFormData>({
     mode: "onBlur",
@@ -22,6 +23,7 @@ export default function CreatePetPage() {
       size: "Medium",
     },
   });
+  const imageUrl = watch("image.url");
 
   const onSubmit = async (data: CreatePetFormData) => {
     if (!user?.accessToken) return;
@@ -318,7 +320,9 @@ export default function CreatePetPage() {
           </div>
 
           <div className="flex flex-1 flex-col gap-4">
-            <div className="flex min-h-50 flex-col items-center justify-center overflow-hidden rounded-xl border border-dashed border-(--color-border) bg-[#fdfaf5] p-6"></div>
+            <div className="flex min-h-50 flex-col items-center justify-center overflow-hidden rounded-xl border border-dashed border-(--color-border) bg-[#fdfaf5] p-6">
+              {imageUrl && <img src={imageUrl} alt="" />}
+            </div>
           </div>
         </div>
       </form>
