@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router";
 import { PawPrint, Share2, Heart, Check, Pencil, Trash2 } from "lucide-react";
 import { PetCard } from "../components/layout/PetCard";
-import { fetchAllPets, fetchPetById } from "../services/pets";
+import { fetchAllPets, fetchPetById, deletePet } from "../services/pets";
 import { type Pet } from "../types/pets";
 import { useAuth } from "../hooks/useAuth";
+import { ConfirmModal } from "../components/modal/ConfirmModal";
 
 const DESCRIPTION_ROWS = (pet: Pet) => [
   [
@@ -30,6 +31,23 @@ export default function PetDetailsPage() {
   const [relatedPets, setRelatedPets] = useState<Pet[]>([]);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
+  async function handleDelete() {
+    try {
+      setDeleting(true);
+
+      await deletePet(pet.id, user.accessToken);
+
+      navigate("/");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to delete pet");
+    } finally {
+      setDeleting(false);
+    }
+  }
+
   const isOwner = pet?.owner.name === user?.name;
 
   useEffect(() => {
@@ -204,6 +222,7 @@ export default function PetDetailsPage() {
                   </Link>
                   <button
                     type="button"
+                    onClick={() => setShowDeleteModal(true)}
                     className="btn-danger btn-full flex-1 gap-1.5"
                   >
                     <Trash2 size={14} />
@@ -227,6 +246,17 @@ export default function PetDetailsPage() {
             ))}
           </div>
         </section>
+      )}
+
+      {showDeleteModal && (
+        <ConfirmModal
+          title={`Are you sure you want to delete ${pet.name}?`}
+          message="This action cannot be undone."
+          confirmText="Yes, delete"
+          loading={deleting}
+          onConfirm={handleDelete}
+          onCancel={() => setShowDeleteModal(false)}
+        />
       )}
     </>
   );
