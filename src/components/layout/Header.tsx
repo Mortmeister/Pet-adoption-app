@@ -38,7 +38,7 @@ export default function Header() {
                 <NavLink to="/manage/pets/create">Add Pet</NavLink>
               </div>
               <div>
-                <NavLink to="/">Profile</NavLink>
+                <NavLink to="/profile">Profile</NavLink>
               </div>
               <button className="btn-outline" onClick={handleLogout}>
                 Logout
