@@ -1,6 +1,6 @@
-import { get } from "./api";
+import { get, post } from "./api";
 
-import { type PetsResponse } from "../types/pets";
+import { type PetsResponse, type CreatePetPayload } from "../types/pets";
 
 export async function fetchPets(page = 1, limit = 12) {
   return get<PetsResponse>(
@@ -14,4 +14,8 @@ export async function fetchAllPets() {
 
 export async function fetchPetById(id: string) {
   return get<PetsResponse>(`/pets/${id}`, null);
+}
+
+export async function createPet(data: CreatePetPayload, token: string) {
+  return post<PetsResponse>(`/pets`, data, token);
 }
