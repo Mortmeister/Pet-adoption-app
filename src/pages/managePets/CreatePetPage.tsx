@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { type CreatePetFormData } from "../../types/pets";
 import { useAuth } from "../../hooks/useAuth";
 import { createPet } from "../../services/pets";
+import { ErrorModal } from "../../components/modal/ErrorModal";
 
 export default function CreatePetPage() {
   const navigate = useNavigate();
@@ -77,11 +78,7 @@ export default function CreatePetPage() {
         Fill in the details below to add a pet to the adoption listings.
       </p>
 
-      {error && (
-        <div className="mb-4">
-          <p>{error}</p>
-        </div>
-      )}
+      {error && <ErrorModal message={error} onClose={() => setError(null)} />}
 
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="flex flex-col gap-8 md:flex-row">

@@ -7,6 +7,7 @@ import { fetchPetById } from "../../services/pets";
 import { type Pet } from "../../types/pets";
 import { updatePet } from "../../services/pets";
 import { useAuth } from "../../hooks/useAuth";
+import { ErrorModal } from "../../components/modal/ErrorModal";
 
 export default function EditPetPage() {
   const [loading, setLoading] = useState(false);
@@ -122,11 +123,7 @@ export default function EditPetPage() {
         Fill in the details below to add a pet to the adoption listings.
       </p>
 
-      {error && (
-        <div className="mb-4">
-          <p>{error}</p>
-        </div>
-      )}
+      {error && <ErrorModal message={error} onClose={() => setError(null)} />}
 
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="flex flex-col gap-8 md:flex-row">
