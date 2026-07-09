@@ -182,7 +182,7 @@ export default function PetDetailsPage() {
             {isOwner && isLoggedIn && (
               <div>
                 <div className="flex gap-3">
-                  <Link to={`/pet/${pet.id}/edit`} className="flex-1">
+                  <Link to={`/manage/pets/${pet.id}/edit`} className="flex-1">
                     <button
                       type="button"
                       className="btn-outline btn-full gap-1.5"

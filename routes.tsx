@@ -7,6 +7,7 @@ import RegisterPage from "./src/pages/authentication/RegisterPage";
 import ProfilePage from "./src/pages/profile/ProfilePage";
 import PetDetailsPage from "./src/pages/PetDetailsPage";
 import CreatePetPage from "./src/pages/managePets/CreatePetPage";
+import EditPetPage from "./src/pages/managePets/EditPetPage";
 
 export const router = createBrowserRouter([
   {
@@ -24,6 +25,7 @@ export const router = createBrowserRouter([
         children: [
           { path: "profile", element: <ProfilePage /> },
           { path: "manage/pets/create", element: <CreatePetPage /> },
+          { path: "manage/pets/:id/edit", element: <EditPetPage /> },
         ],
       },
     ],
