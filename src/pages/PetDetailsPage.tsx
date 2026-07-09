@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router";
-import { PawPrint, Share2, Heart, Check } from "lucide-react";
+import { PawPrint, Share2, Heart, Check, Pencil, Trash2 } from "lucide-react";
 import { PetCard } from "../components/layout/PetCard";
 import { fetchAllPets, fetchPetById } from "../services/pets";
 import { type Pet } from "../types/pets";
+import { useAuth } from "../hooks/useAuth";
 
 const DESCRIPTION_ROWS = (pet: Pet) => [
   [
@@ -18,12 +19,13 @@ const DESCRIPTION_ROWS = (pet: Pet) => [
 
 export default function PetDetailsPage() {
   const { id } = useParams();
+  const { user, isLoggedIn } = useAuth();
   const navigate = useNavigate();
   const [pet, setPet] = useState<Pet | null>(null);
   const [relatedPets, setRelatedPets] = useState<Pet[]>([]);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
-
+  const isOwner = pet?.owner.name === user?.name;
   useEffect(() => {
     if (!id) {
       setLoading(false);
@@ -177,6 +179,28 @@ export default function PetDetailsPage() {
               <Heart size={16} />
               Interested in adopting?
             </button>
+            {isOwner && isLoggedIn && (
+              <div>
+                <div className="flex gap-3">
+                  <Link to={`/pet/${pet.id}/edit`} className="flex-1">
+                    <button
+                      type="button"
+                      className="btn-outline btn-full gap-1.5"
+                    >
+                      <Pencil size={14} />
+                      Edit
+                    </button>
+                  </Link>
+                  <button
+                    type="button"
+                    className="btn-danger btn-full flex-1 gap-1.5"
+                  >
+                    <Trash2 size={14} />
+                    Delete
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </section>
