@@ -36,3 +36,31 @@ export type LoginResponse = {
     accessToken: string;
   };
 };
+
+export type Profile = {
+  name: string;
+  email: string;
+  bio?: string;
+  avatar?: { url: string; alt?: string };
+  banner?: { url: string; alt?: string };
+};
+
+export type ProfileResponse = {
+  data: Profile;
+};
+
+export type EditProfileFormData = {
+  bio: string;
+  avatarUrl: string;
+  bannerUrl: string;
+};
+
+export type UpdateProfilePayload = {
+  bio?: string;
+  avatar?: {
+    url?: string;
+  };
+  banner?: {
+    url?: string;
+  };
+};
