@@ -1,15 +1,20 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Check } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { type CreatePetFormData } from "../../types/pets";
+import { useAuth } from "../../hooks/useAuth";
+import { createPet } from "../../services/pets";
 
 export default function CreatePetPage() {
+  const navigate = useNavigate();
+  const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const {
     register,
+    handleSubmit,
     formState: { errors },
   } = useForm<CreatePetFormData>({
     mode: "onBlur",
@@ -17,6 +22,41 @@ export default function CreatePetPage() {
       size: "Medium",
     },
   });
+
+  const onSubmit = async (data: CreatePetFormData) => {
+    if (!user?.accessToken) return;
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await createPet(
+        {
+          name: data.name,
+          breed: data.breed,
+          age: Number(data.age),
+          size: data.size,
+          color: data.color,
+          description: data.description,
+          species: data.species,
+          gender: data.gender,
+          location: data.location,
+          image: {
+            url: data.image?.url,
+
+            alt: data.image?.alt,
+          },
+        },
+
+        user.accessToken,
+      );
+      navigate(`/pet/${response?.data.id}`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="mx-auto w-full max-w-275 flex-1 px-6 py-6">
@@ -41,7 +81,7 @@ export default function CreatePetPage() {
         </div>
       )}
 
-      <form>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <div className="flex flex-col gap-8 md:flex-row">
           <div className="flex flex-col gap-4 md:shrink-0 md:basis-[55%]">
             <div className="flex gap-4">
@@ -83,8 +123,8 @@ export default function CreatePetPage() {
                       message: "Breed must be at least 3 characters longs",
                     },
                     maxLength: {
-                      value: 15,
-                      message: "Breed cannot be more than 15 characters longs",
+                      value: 30,
+                      message: "Breed cannot be more than 30 characters longs",
                     },
                   })}
                 />
@@ -108,9 +148,9 @@ export default function CreatePetPage() {
                       message: "Species must be at least 3 characters longs",
                     },
                     maxLength: {
-                      value: 15,
+                      value: 45,
                       message:
-                        "Species cannot be more than 15 characters longs",
+                        "Species cannot be more than 45 characters longs",
                     },
                   })}
                 />
@@ -184,8 +224,8 @@ export default function CreatePetPage() {
                       message: "Color must be at least 3 characters longs",
                     },
                     maxLength: {
-                      value: 15,
-                      message: "Color cannot be more than 15 characters longs",
+                      value: 30,
+                      message: "Color cannot be more than 30 characters longs",
                     },
                   })}
                 />
