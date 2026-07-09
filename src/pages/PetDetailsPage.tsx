@@ -8,13 +8,18 @@ import { useAuth } from "../hooks/useAuth";
 
 const DESCRIPTION_ROWS = (pet: Pet) => [
   [
+    { label: "Species", value: pet.species },
     { label: "Breed", value: pet.breed },
-    { label: "Age", value: `${pet.age} year${pet.age !== 1 ? "s" : ""}` },
   ],
   [
     { label: "Size", value: pet.size },
     { label: "Color", value: pet.color },
   ],
+  [
+    { label: "Gender", value: pet.gender },
+    { label: "Age", value: `${pet.age} year${pet.age !== 1 ? "s" : ""}` },
+  ],
+  [{ label: "Location", value: pet.location }],
 ];
 
 export default function PetDetailsPage() {
@@ -26,6 +31,7 @@ export default function PetDetailsPage() {
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
   const isOwner = pet?.owner.name === user?.name;
+
   useEffect(() => {
     if (!id) {
       setLoading(false);
@@ -51,7 +57,8 @@ export default function PetDetailsPage() {
               .filter(
                 (item) =>
                   item.id !== petId &&
-                  item.species === petResponse?.data.species,
+                  item.species.toLowerCase() ===
+                    petResponse?.data.species.toLowerCase(),
               )
               .slice(0, 3),
           );
@@ -107,19 +114,21 @@ export default function PetDetailsPage() {
 
       <section className="mx-auto w-full max-w-275 px-6 py-6">
         <div className="flex flex-col gap-8 md:flex-row">
-          <div className="md:max-w-[55%] md:shrink-0">
-            <div className="flex aspect-4/3 items-center justify-center overflow-hidden rounded-xl bg-(--color-accent)">
+          <div className="flex md:w-[55%]">
+            <div className="relative w-full overflow-hidden rounded-xl bg-(--color-accent)">
               {pet.image?.url ? (
                 <img
                   src={pet.image.url}
                   alt={pet.image.alt ?? pet.name}
-                  className="h-full w-full object-cover"
+                  className="absolute inset-0 h-full w-full object-cover"
                 />
               ) : (
-                <PawPrint
-                  size={72}
-                  className="text-(--color-text) opacity-50"
-                />
+                <div className="flex min-h-100 items-center justify-center">
+                  <PawPrint
+                    size={72}
+                    className="text-(--color-text) opacity-50"
+                  />
+                </div>
               )}
             </div>
           </div>
@@ -149,7 +158,7 @@ export default function PetDetailsPage() {
               {DESCRIPTION_ROWS(pet).map((row, rowIndex) => (
                 <div
                   key={rowIndex}
-                  className={`flex ${rowIndex === 0 ? "border-b border-(--color-border)" : ""}`}
+                  className={`flex ${rowIndex !== 3 ? "border-b border-(--color-border)" : "text-center"}`}
                 >
                   {row.map(({ label, value }, columnIndex) => (
                     <div
@@ -159,7 +168,9 @@ export default function PetDetailsPage() {
                       <p className="mb-0.5 text-[11px] font-medium tracking-wider text-(--color-text-muted) uppercase">
                         {label}
                       </p>
-                      <p className="m-0 text-(--color-text)">{value}</p>
+                      <p className="m-0 text-(--color-text) capitalize">
+                        {value}
+                      </p>
                     </div>
                   ))}
                 </div>

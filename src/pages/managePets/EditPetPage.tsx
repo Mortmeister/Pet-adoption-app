@@ -1,15 +1,25 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { Check } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { type CreatePetFormData } from "../../types/pets";
+import { fetchPetById } from "../../services/pets";
+import { type Pet } from "../../types/pets";
+import { updatePet } from "../../services/pets";
+import { useAuth } from "../../hooks/useAuth";
 
 export default function EditPetPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [pet, setPet] = useState<Pet | null>(null);
+  const { id } = useParams();
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
   const {
     register,
+    reset,
+    handleSubmit,
     formState: { errors },
   } = useForm<CreatePetFormData>({
     mode: "onBlur",
@@ -17,6 +27,79 @@ export default function EditPetPage() {
       size: "Medium",
     },
   });
+  useEffect(() => {
+    if (!id) {
+      setLoading(false);
+      return;
+    }
+
+    const petId = id;
+
+    async function loadPetDetails() {
+      try {
+        const petResponse = await fetchPetById(petId);
+        const petData = petResponse?.data;
+        console.log(petData);
+        if (petData) {
+          setPet(petData);
+          reset({
+            name: petData.name,
+            breed: petData.breed,
+            species: petData.species,
+            gender: petData.gender,
+            age: Number(petData.age),
+            size: petData.size,
+            color: petData.color,
+            location: petData.location,
+            description: petData.description,
+            image: {
+              url: petData.image?.url ?? "",
+              alt: petData.image?.alt ?? "",
+            },
+          });
+        }
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadPetDetails();
+  }, [id, reset]);
+
+  const onSubmit = async (data: CreatePetFormData) => {
+    if (!id) return;
+
+    setLoading(true);
+
+    setError(null);
+
+    try {
+      await updatePet(
+        {
+          name: data.name,
+          breed: data.breed,
+          age: Number(data.age),
+          size: data.size,
+          color: data.color,
+          species: data.species,
+          gender: data.gender,
+          location: data.location,
+          description: data.description,
+          image: {
+            url: data.image?.url,
+            alt: data.image?.alt,
+          },
+        },
+        user?.accessToken,
+        id,
+      );
+      navigate(`/pet/${id}`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to update pet");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="mx-auto w-full max-w-275 flex-1 px-6 py-6">
@@ -41,7 +124,7 @@ export default function EditPetPage() {
         </div>
       )}
 
-      <form>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <div className="flex flex-col gap-8 md:flex-row">
           <div className="flex flex-col gap-4 md:shrink-0 md:basis-[55%]">
             <div className="flex gap-4">
