@@ -34,6 +34,10 @@ export default function PetDetailsPage() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
+  function isAvailable(pet: Pet) {
+    return pet.adoptionStatus.toLowerCase() === "available";
+  }
+
   async function handleDelete() {
     try {
       setDeleting(true);
@@ -72,8 +76,10 @@ export default function PetDetailsPage() {
         if (allPetsResponse?.data) {
           setRelatedPets(
             allPetsResponse.data
+
               .filter(
                 (item) =>
+                  item.adoptionStatus.toLowerCase() === "available" &&
                   item.id !== petId &&
                   item.species.toLowerCase() ===
                     petResponse?.data.species.toLowerCase(),
@@ -247,7 +253,16 @@ export default function PetDetailsPage() {
           </h3>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {relatedPets.map((relatedPet) => (
-              <PetCard key={relatedPet.id} pet={relatedPet} />
+              <PetCard
+                key={relatedPet.id}
+                pet={relatedPet}
+                badge={{
+                  label: isAvailable(relatedPet) ? "Available" : "Adopted out",
+                  className: isAvailable(relatedPet)
+                    ? "bg-(--color-success) text-white"
+                    : "bg-(--color-text-muted) text-white",
+                }}
+              />
             ))}
           </div>
         </section>
