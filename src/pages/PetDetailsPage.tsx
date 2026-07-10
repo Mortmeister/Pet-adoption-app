@@ -204,32 +204,37 @@ export default function PetDetailsPage() {
               </p>
             </div>
 
-            <button type="button" className="btn-primary btn-lg btn-full gap-2">
-              <Heart size={16} />
-              Interested in adopting?
-            </button>
             {isOwner && isLoggedIn && (
-              <div>
-                <div className="flex gap-3">
-                  <Link to={`/manage/pets/${pet.id}/edit`} className="flex-1">
+              <>
+                <button
+                  type="button"
+                  className="btn-primary btn-lg btn-full gap-2"
+                >
+                  <Heart size={16} />
+                  Mark {pet.name} as adopted
+                </button>
+                <div>
+                  <div className="flex gap-3">
+                    <Link to={`/manage/pets/${pet.id}/edit`} className="flex-1">
+                      <button
+                        type="button"
+                        className="btn-outline btn-full gap-1.5"
+                      >
+                        <Pencil size={14} />
+                        Edit
+                      </button>
+                    </Link>
                     <button
                       type="button"
-                      className="btn-outline btn-full gap-1.5"
+                      onClick={() => setShowDeleteModal(true)}
+                      className="btn-danger btn-full flex-1 gap-1.5"
                     >
-                      <Pencil size={14} />
-                      Edit
+                      <Trash2 size={14} />
+                      Delete
                     </button>
-                  </Link>
-                  <button
-                    type="button"
-                    onClick={() => setShowDeleteModal(true)}
-                    className="btn-danger btn-full flex-1 gap-1.5"
-                  >
-                    <Trash2 size={14} />
-                    Delete
-                  </button>
+                  </div>
                 </div>
-              </div>
+              </>
             )}
           </div>
         </div>
