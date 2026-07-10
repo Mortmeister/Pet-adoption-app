@@ -4,16 +4,17 @@ import { type Pet } from "../../types/pets";
 
 interface PetCardProps {
   pet: Pet;
+  badge: { label: string; className: string };
 }
 
-export function PetCard({ pet }: PetCardProps) {
+export function PetCard({ pet, badge }: PetCardProps) {
   const navigate = useNavigate();
 
   return (
     <div
       className={`flex flex-col overflow-hidden rounded-xl border border-(--color-border) bg-(--color-surface) shadow-sm transition-all duration-200 hover:scale-101`}
     >
-      <div className="flex aspect-video items-center justify-center overflow-hidden bg-(--color-accent)">
+      <div className="relative flex aspect-video items-center justify-center overflow-hidden bg-(--color-accent)">
         {pet.image?.url ? (
           <img
             src={pet.image.url}
@@ -23,6 +24,11 @@ export function PetCard({ pet }: PetCardProps) {
         ) : (
           <PawPrint size={40} className="text-(--color-text) opacity-60" />
         )}
+        <span
+          className={`absolute top-2 left-2 rounded px-1.5 py-0.5 text-[10px] font-medium ${badge.className}`}
+        >
+          {badge.label}
+        </span>
       </div>
 
       <div className="flex flex-1 flex-col gap-2 p-4">

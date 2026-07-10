@@ -1,15 +1,40 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { Heart, Pencil, Plus } from "lucide-react";
+import { Link } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import { fetchProfile } from "../../services/profile";
+import { deletePet, fetchAllPets } from "../../services/pets";
 import { type Profile } from "../../types/authentication";
-import { EditProfileModal } from "../../components/layout/EditProfileModal";
-import { Pencil } from "lucide-react";
+import { type Pet } from "../../types/pets";
+import { ProfilePetCard } from "../../components/layout/ProfilePetCard";
+import { EditProfileModal } from "../../components/modal/EditProfileModal";
+
+type ListingFilter = "All" | "Available" | "Adopted out";
+
+function filterButtonClass(active: boolean) {
+  return [
+    "cursor-pointer rounded-full border-[1.5px] px-3.5 py-1.25 text-[13px] font-medium transition-all duration-150",
+    active
+      ? "border-(--color-primary) bg-(--color-primary) text-white"
+      : "border-(--color-border) bg-(--color-surface) text-(--color-text)",
+  ].join(" ");
+}
+
+function isAvailable(pet: Pet) {
+  return pet.adoptionStatus.toLowerCase() === "available";
+}
+
+function isAdopted(pet: Pet) {
+  return pet.adoptionStatus.toLowerCase() === "adopted";
+}
 
 export default function ProfilePage() {
   const { user } = useAuth();
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [myPets, setMyPets] = useState<Pet[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [listingFilter, setListingFilter] = useState<ListingFilter>("All");
   const [showEditModal, setShowEditModal] = useState(false);
 
   const handleProfileUpdated = (updatedProfile: Profile) => {
@@ -20,18 +45,29 @@ export default function ProfilePage() {
   useEffect(() => {
     if (!user?.accessToken) return;
 
-    const { name, accessToken } = user;
+    const { name, email, accessToken } = user;
 
     async function loadProfile() {
       try {
-        const response = await fetchProfile(name, accessToken);
+        const [profileResponse, petsResponse] = await Promise.all([
+          fetchProfile(name, accessToken),
+          fetchAllPets(),
+        ]);
 
-        if (!response?.data) {
+        if (!profileResponse?.data) {
           setError("Could not load your profile.");
           return;
         }
 
-        setProfile(response.data);
+        setProfile(profileResponse.data);
+
+        if (petsResponse?.data) {
+          setMyPets(
+            petsResponse.data.filter(
+              (pet) => pet.owner.email.toLowerCase() === email.toLowerCase(),
+            ),
+          );
+        }
       } catch (err) {
         setError(err instanceof Error ? err.message : "Something went wrong");
       } finally {
@@ -40,7 +76,34 @@ export default function ProfilePage() {
     }
 
     loadProfile();
-  }, [user?.accessToken, user?.name]);
+  }, [user?.accessToken, user?.name, user?.email]);
+
+  const availableCount = myPets.filter(isAvailable).length;
+  const adoptedOutCount = myPets.filter(isAdopted).length;
+
+  const filteredListings = useMemo(() => {
+    if (listingFilter === "Available") {
+      return myPets.filter(isAvailable);
+    }
+
+    if (listingFilter === "Adopted out") {
+      return myPets.filter(isAdopted);
+    }
+
+    return myPets;
+  }, [myPets, listingFilter]);
+
+  const handleDeletePet = async (petId: string) => {
+    if (!user?.accessToken) return;
+    if (!window.confirm("Are you sure you want to delete this pet?")) return;
+
+    try {
+      await deletePet(petId, user.accessToken);
+      setMyPets((current) => current.filter((pet) => pet.id !== petId));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong");
+    }
+  };
 
   if (loading) {
     return (
@@ -95,7 +158,7 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          <div className="flex items-start justify-between mt-3">
+          <div className="mt-3 flex items-start justify-between">
             <div>
               <h1 className="mb-0.5 text-2xl font-bold text-(--color-text)">
                 {profile.name}
@@ -108,7 +171,8 @@ export default function ProfilePage() {
               onClick={() => setShowEditModal(true)}
               className="btn btn-outline"
             >
-              <Pencil size={13} /> Edit profile
+              <Pencil size={13} />
+              Edit profile
             </button>
           </div>
         </div>
@@ -116,7 +180,7 @@ export default function ProfilePage() {
 
       <div className="mx-auto w-full max-w-275 flex-1 px-6 py-8">
         {profile.bio && (
-          <div className="rounded-xl border border-(--color-border) bg-(--color-surface) p-4">
+          <div className="mb-8 rounded-xl border border-(--color-border) bg-(--color-surface) p-4">
             <p className="mb-2 text-[11px] font-medium tracking-wider text-(--color-text-muted) uppercase">
               About
             </p>
@@ -125,6 +189,58 @@ export default function ProfilePage() {
             </p>
           </div>
         )}
+
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex flex-wrap gap-2">
+            {(
+              [
+                { label: `All (${myPets.length})`, value: "All" as const },
+                {
+                  label: `Available (${availableCount})`,
+                  value: "Available" as const,
+                },
+                {
+                  label: `Adopted out (${adoptedOutCount})`,
+                  value: "Adopted out" as const,
+                },
+              ] as const
+            ).map(({ label, value }) => (
+              <button
+                key={value}
+                type="button"
+                onClick={() => setListingFilter(value)}
+                className={filterButtonClass(listingFilter === value)}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+          <Link to="/manage/pets/create">
+            <button
+              type="button"
+              className="btn-primary gap-1.5 px-3.5 py-1.5 text-[13px]"
+            >
+              <Plus size={14} />
+              Add pet
+            </button>
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {filteredListings.map((pet) => (
+            <ProfilePetCard
+              key={pet.id}
+              pet={pet}
+              badge={{
+                label: isAvailable(pet) ? "Available" : "Adopted out",
+                className: isAvailable(pet)
+                  ? "bg-(--color-success) text-white"
+                  : "bg-(--color-text-muted) text-white",
+              }}
+              onDelete={handleDeletePet}
+            />
+          ))}
+        </div>
       </div>
       {showEditModal && (
         <EditProfileModal

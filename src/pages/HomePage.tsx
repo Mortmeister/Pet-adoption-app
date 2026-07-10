@@ -81,6 +81,9 @@ export default function HomePage() {
       sortDate,
     ],
   );
+  function isAvailable(pet: Pet) {
+    return pet.adoptionStatus.toLowerCase() === "available";
+  }
 
   useEffect(() => {
     async function loadPets() {
@@ -397,7 +400,16 @@ export default function HomePage() {
           ) : (
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {filteredPets.map((pet) => (
-                <PetCard key={pet.id} pet={pet} />
+                <PetCard
+                  key={pet.id}
+                  pet={pet}
+                  badge={{
+                    label: isAvailable(pet) ? "Available" : "Adopted out",
+                    className: isAvailable(pet)
+                      ? "bg-(--color-success) text-white"
+                      : "bg-(--color-text-muted) text-white",
+                  }}
+                />
               ))}
             </div>
           )}
