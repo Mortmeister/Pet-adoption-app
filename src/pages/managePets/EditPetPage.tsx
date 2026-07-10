@@ -128,10 +128,10 @@ export default function EditPetPage() {
       </p>
 
       <h2 className="mb-1.5 text-[2rem] leading-tight font-bold text-(--color-text)">
-        Add a new pet
+        Edit {pet?.name}
       </h2>
       <p className="mb-8 text-[15px] text-(--color-text-muted)">
-        Fill in the details below to add a pet to the adoption listings.
+        Fill in below to edit the details to the adoption.
       </p>
 
       {error && <ErrorModal message={error} onClose={() => setError(null)} />}

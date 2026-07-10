@@ -18,6 +18,7 @@ import {
 import { HomePageSkeleton } from "../components/layout/HomePageSkeleton";
 import { useDebouncedValue } from "../hooks/useDebounce";
 import { filterPets } from "../utils/filterPets";
+import { Pagination } from "../components/layout/Pagination";
 
 const SPECIES_FILTERS: { label: string; icon: LucideIcon }[] = [
   { label: "All", icon: PawPrint },
@@ -28,7 +29,7 @@ const SPECIES_FILTERS: { label: string; icon: LucideIcon }[] = [
   { label: "Snake", icon: Worm },
   { label: "Snail", icon: Snail },
 ];
-
+const PETS_PER_PAGE = 12;
 const STATUS_FILTERS = ["All", "available", "adopted"] as const;
 type StatusFilter = (typeof STATUS_FILTERS)[number];
 
@@ -51,6 +52,7 @@ export default function HomePage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [speciesFilter, setSpeciesFilter] = useState("All");
   const [sizeFilter, setSizeFilter] = useState("All");
+  const [page, setPage] = useState(1);
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("All");
   const [sortDate, setSortDate] = useState<"newest" | "oldest">("newest");
   const isFiltered =
@@ -84,6 +86,21 @@ export default function HomePage() {
   function isAvailable(pet: Pet) {
     return pet.adoptionStatus.toLowerCase() === "available";
   }
+
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filteredPets.length / PETS_PER_PAGE),
+  );
+  const safePage = Math.min(Math.max(page, 1), totalPages);
+
+  const paginatedPets = useMemo(() => {
+    const start = (safePage - 1) * PETS_PER_PAGE;
+    return filteredPets.slice(start, start + PETS_PER_PAGE);
+  }, [filteredPets, safePage]);
+
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedSearchQuery, speciesFilter, sizeFilter, statusFilter, sortDate]);
 
   useEffect(() => {
     async function loadPets() {
@@ -389,7 +406,7 @@ export default function HomePage() {
               </span>
             </div>
             <p className="text-[13px] text-(--color-text-muted)">
-              Showing {filteredPets.length} of {allPets.length} pets
+              Showing {paginatedPets.length} of {allPets.length} pets
             </p>
           </div>
 
@@ -398,20 +415,27 @@ export default function HomePage() {
               No pets match your search.
             </p>
           ) : (
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {filteredPets.map((pet) => (
-                <PetCard
-                  key={pet.id}
-                  pet={pet}
-                  badge={{
-                    label: isAvailable(pet) ? "Available" : "Adopted out",
-                    className: isAvailable(pet)
-                      ? "bg-(--color-success) text-white"
-                      : "bg-(--color-text-muted) text-white",
-                  }}
-                />
-              ))}
-            </div>
+            <>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {paginatedPets.map((pet) => (
+                  <PetCard
+                    key={pet.id}
+                    pet={pet}
+                    badge={{
+                      label: isAvailable(pet) ? "Available" : "Adopted out",
+                      className: isAvailable(pet)
+                        ? "bg-(--color-success) text-white"
+                        : "bg-(--color-text-muted) text-white",
+                    }}
+                  />
+                ))}
+              </div>
+              <Pagination
+                page={safePage}
+                totalPages={totalPages}
+                onPageChange={setPage}
+              />
+            </>
           )}
         </div>
       </section>
