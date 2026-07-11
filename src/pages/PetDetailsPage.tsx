@@ -186,20 +186,20 @@ export default function PetDetailsPage() {
       <section className="mx-auto w-full max-w-275 px-6 py-6">
         <div className="flex flex-col gap-8 md:flex-row">
           <div className="flex md:w-[55%]">
-            <div className="relative w-full overflow-hidden rounded-xl bg-(--color-accent)">
+            <div className="relative flex aspect-4/3 w-full items-center justify-center overflow-hidden rounded-xl bg-(--color-accent) md:aspect-square">
+              {" "}
               {pet.image?.url ? (
                 <img
                   src={pet.image.url}
                   alt={pet.image.alt ?? pet.name}
-                  className="absolute inset-0 h-full w-full object-cover"
+                  className="h-full w-full object-cover"
+                  referrerPolicy="no-referrer"
                 />
               ) : (
-                <div className="flex min-h-100 items-center justify-center">
-                  <PawPrint
-                    size={72}
-                    className="text-(--color-text) opacity-50"
-                  />
-                </div>
+                <PawPrint
+                  size={72}
+                  className="text-(--color-text) opacity-50"
+                />
               )}
             </div>
           </div>
