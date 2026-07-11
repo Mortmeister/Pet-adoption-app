@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Heart, Pencil, Plus } from "lucide-react";
+import { Pencil, Plus } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import { fetchProfile } from "../../services/profile";

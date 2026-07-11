@@ -48,6 +48,7 @@ export default function PetDetailsPage() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const { showToast } = useToast();
+  const [showAdoptionModal, setShowAdoptionModal] = useState(false);
 
   function isAvailable(pet: Pet) {
     return pet.adoptionStatus.toLowerCase() === "available";
@@ -56,7 +57,7 @@ export default function PetDetailsPage() {
   async function handleDelete() {
     try {
       setDeleting(true);
-
+      if (!pet || !user?.accessToken) return;
       await deletePet(pet.id, user.accessToken);
       showToast("Pet deleted", "error");
       navigate("/");
@@ -94,6 +95,7 @@ export default function PetDetailsPage() {
       }
     } catch (err) {
       showToast("Something went wrong updating adoption status", "error");
+      console.log(err);
     }
   }
 
@@ -261,7 +263,7 @@ export default function PetDetailsPage() {
                   <button
                     type="button"
                     className="btn-primary btn-lg btn-full gap-2"
-                    onClick={handleAdoptionStatus}
+                    onClick={() => setShowAdoptionModal(true)}
                   >
                     <Heart size={16} />
                     Mark {pet.name} as adopted
@@ -270,7 +272,7 @@ export default function PetDetailsPage() {
                   <button
                     type="button"
                     className="btn-outline btn-lg btn-full gap-2"
-                    onClick={handleAdoptionStatus}
+                    onClick={() => setShowAdoptionModal(true)}
                   >
                     <CheckCircle size={16} />
                     Mark {pet.name} as available
@@ -334,6 +336,18 @@ export default function PetDetailsPage() {
           loading={deleting}
           onConfirm={handleDelete}
           onCancel={() => setShowDeleteModal(false)}
+        />
+      )}
+      {showAdoptionModal && (
+        <ConfirmModal
+          title={`Are you sure you want to mark ${pet.name} ${isAvailable(pet) ? "as adopted" : "as available for adoption"}?`}
+          message={`This action will update ${pet.name}'s adoption status.`}
+          confirmText="Yes, continue"
+          onConfirm={() => {
+            handleAdoptionStatus();
+            setShowAdoptionModal(false);
+          }}
+          onCancel={() => setShowAdoptionModal(false)}
         />
       )}
     </>

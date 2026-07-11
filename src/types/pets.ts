@@ -26,6 +26,10 @@ export type PetsResponse = {
   data: Pet[];
 };
 
+export type PetResponse = {
+  data: Pet;
+};
+
 export type CreatePetFormData = {
   name: string;
   breed: string;

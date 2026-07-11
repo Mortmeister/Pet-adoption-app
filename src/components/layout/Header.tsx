@@ -5,7 +5,7 @@ import { useAuth } from "../../hooks/useAuth";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { isLoggedIn, user, logout } = useAuth();
+  const { isLoggedIn, logout } = useAuth();
 
   const navigate = useNavigate();
 

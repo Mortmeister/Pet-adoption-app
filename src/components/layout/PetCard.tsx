@@ -20,6 +20,7 @@ export function PetCard({ pet, badge }: PetCardProps) {
             src={pet.image.url}
             alt={pet.image.alt}
             className="h-full w-full object-cover"
+            referrerPolicy="no-referrer"
           />
         ) : (
           <PawPrint size={40} className="text-(--color-text) opacity-60" />

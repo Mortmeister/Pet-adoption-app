@@ -22,12 +22,7 @@ export function EditProfileModal({
 }: EditProfileModalProps) {
   const { user } = useAuth();
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<EditProfileFormData>({
+  const { register, handleSubmit, reset } = useForm<EditProfileFormData>({
     defaultValues: {
       bio: profile.bio ?? "",
       avatarUrl: profile.avatar?.url ?? "",
@@ -67,7 +62,7 @@ export function EditProfileModal({
         user.accessToken,
       );
 
-      if (response.data) {
+      if (response?.data) {
         onUpdated(response.data);
       }
     } catch (err) {

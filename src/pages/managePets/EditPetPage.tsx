@@ -84,7 +84,7 @@ export default function EditPetPage() {
   }, [id, reset]);
 
   const onSubmit = async (data: CreatePetFormData) => {
-    if (!id) return;
+    if (!id || !user?.accessToken) return;
 
     setLoading(true);
 
@@ -103,11 +103,11 @@ export default function EditPetPage() {
           location: data.location,
           description: data.description,
           image: {
-            url: data.image?.url,
+            url: data.image?.url ?? "",
             alt: data.image?.alt,
           },
         },
-        user?.accessToken,
+        user.accessToken,
         id,
       );
       setShowConfirmModal(false);

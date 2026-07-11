@@ -1,5 +1,5 @@
 import { PawPrint } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { type Pet } from "../../types/pets";
 
 interface ProfilePetCardProps {
@@ -10,6 +10,7 @@ interface ProfilePetCardProps {
 
 export function ProfilePetCard({ pet, badge, onDelete }: ProfilePetCardProps) {
   const isAvailable = pet.adoptionStatus.toLowerCase() === "available";
+  const navigate = useNavigate();
 
   return (
     <div className="overflow-hidden rounded-xl border border-(--color-border) bg-(--color-surface)">
@@ -61,12 +62,12 @@ export function ProfilePetCard({ pet, badge, onDelete }: ProfilePetCardProps) {
             </button>
           </div>
         ) : (
-          <Link
-            to={`/pet/${pet.id}`}
-            className="block w-full rounded-md border-[1.5px] border-(--color-border) bg-transparent px-0 py-1.25 text-center text-xs font-medium text-(--color-text-muted)"
+          <button
+            onClick={() => navigate(`/pet/${pet.id}`)}
+            className="mt-auto w-full rounded-lg bg-(--color-primary) px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-(--color-primary-hover)"
           >
-            View
-          </Link>
+            View {pet.name}
+          </button>
         )}
       </div>
     </div>
