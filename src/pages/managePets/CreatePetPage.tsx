@@ -57,7 +57,7 @@ export default function CreatePetPage() {
           gender: data.gender,
           location: data.location,
           image: {
-            url: data.image?.url,
+            url: data.image?.url ?? "",
 
             alt: data.image?.alt,
           },

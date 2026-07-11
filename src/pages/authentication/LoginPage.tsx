@@ -12,11 +12,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const login = useAuth().login;
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<Login>({ mode: "onBlur" });
+  const { register, handleSubmit } = useForm<Login>({ mode: "onBlur" });
 
   const onSubmit = async (data: Login) => {
     setError(null);

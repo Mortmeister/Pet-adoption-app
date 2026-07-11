@@ -1,9 +1,9 @@
 import { get, post, put, del } from "./api";
 
 import {
+  type PetResponse,
   type PetsResponse,
   type CreatePetPayload,
-  type EditAdoptionStatusPayload,
 } from "../types/pets";
 
 export async function fetchPets(page = 1, limit = 12) {
@@ -17,18 +17,18 @@ export async function fetchAllPets() {
 }
 
 export async function fetchPetById(id: string) {
-  return get<PetsResponse>(`/pets/${id}`, null);
+  return get<PetResponse>(`/pets/${id}`, null);
 }
 
 export async function createPet(data: CreatePetPayload, token: string) {
-  return post<PetsResponse>(`/pets`, data, token);
+  return post<PetResponse>(`/pets`, data, token);
 }
 export async function updatePet(
   data: CreatePetPayload,
   token: string,
   id: string,
 ) {
-  return put<PetsResponse>(`/pets/${id}`, data, token);
+  return put<PetResponse>(`/pets/${id}`, data, token);
 }
 export async function deletePet(id: string, token: string) {
   return del(`/pets/${id}`, token);
