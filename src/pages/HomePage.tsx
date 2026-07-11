@@ -266,7 +266,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="w-full border-y border-(--color-border) bg-(--color-surface) px-6 py-8 justify-items-center">
+      <section className="w-full border-y border-(--color-border) bg-(--color-surface) px-6 py-10 justify-items-center">
         <div className="grid w-full grid-cols-2 gap-6 md:grid-cols-4 max-w-275">
           {[
             { value: `${getAvailablePetsLength}`, label: "Pets available" },
@@ -422,7 +422,7 @@ export default function HomePage() {
                     key={pet.id}
                     pet={pet}
                     badge={{
-                      label: isAvailable(pet) ? "Available" : "Adopted out",
+                      label: isAvailable(pet) ? "Available" : "Adopted",
                       className: isAvailable(pet)
                         ? "bg-(--color-success) text-white"
                         : "bg-(--color-text-muted) text-white",

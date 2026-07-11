@@ -7,6 +7,7 @@ import { useAuth } from "../../hooks/useAuth";
 import { createPet } from "../../services/pets";
 import { ErrorModal } from "../../components/modal/ErrorModal";
 import { ConfirmModal } from "../../components/modal/ConfirmModal";
+import { useToast } from "../../context/ToastContext";
 
 export default function CreatePetPage() {
   const navigate = useNavigate();
@@ -17,6 +18,7 @@ export default function CreatePetPage() {
   const [pendingData, setPendingData] = useState<CreatePetFormData | null>(
     null,
   );
+  const { showToast } = useToast();
 
   const handleOpenConfirm = (data: CreatePetFormData) => {
     setPendingData(data);
@@ -64,6 +66,7 @@ export default function CreatePetPage() {
         user.accessToken,
       );
       setShowConfirmModal(false);
+      showToast("Pet added successfully!", "success");
       navigate(`/pet/${response?.data.id}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");

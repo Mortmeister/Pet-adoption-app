@@ -8,8 +8,9 @@ import { type Profile } from "../../types/authentication";
 import { type Pet } from "../../types/pets";
 import { ProfilePetCard } from "../../components/layout/ProfilePetCard";
 import { EditProfileModal } from "../../components/modal/EditProfileModal";
+import { useToast } from "../../context/ToastContext";
 
-type ListingFilter = "All" | "Available" | "Adopted out";
+type ListingFilter = "All" | "Available" | "Adopted";
 
 function filterButtonClass(active: boolean) {
   return [
@@ -36,9 +37,11 @@ export default function ProfilePage() {
   const [error, setError] = useState<string | null>(null);
   const [listingFilter, setListingFilter] = useState<ListingFilter>("All");
   const [showEditModal, setShowEditModal] = useState(false);
+  const { showToast } = useToast();
 
   const handleProfileUpdated = (updatedProfile: Profile) => {
     setProfile(updatedProfile);
+    showToast("Profile edited", "success");
     setShowEditModal(false);
   };
 
@@ -86,7 +89,7 @@ export default function ProfilePage() {
       return myPets.filter(isAvailable);
     }
 
-    if (listingFilter === "Adopted out") {
+    if (listingFilter === "Adopted") {
       return myPets.filter(isAdopted);
     }
 
@@ -100,6 +103,7 @@ export default function ProfilePage() {
     try {
       await deletePet(petId, user.accessToken);
       setMyPets((current) => current.filter((pet) => pet.id !== petId));
+      showToast("Pet deleted", "error");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
     }
@@ -200,8 +204,8 @@ export default function ProfilePage() {
                   value: "Available" as const,
                 },
                 {
-                  label: `Adopted out (${adoptedOutCount})`,
-                  value: "Adopted out" as const,
+                  label: `Adopted (${adoptedOutCount})`,
+                  value: "Adopted" as const,
                 },
               ] as const
             ).map(({ label, value }) => (
@@ -232,7 +236,7 @@ export default function ProfilePage() {
               key={pet.id}
               pet={pet}
               badge={{
-                label: isAvailable(pet) ? "Available" : "Adopted out",
+                label: isAvailable(pet) ? "Available" : "Adopted",
                 className: isAvailable(pet)
                   ? "bg-(--color-success) text-white"
                   : "bg-(--color-text-muted) text-white",
