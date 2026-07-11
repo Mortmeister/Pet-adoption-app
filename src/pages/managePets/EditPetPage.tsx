@@ -9,6 +9,7 @@ import { updatePet } from "../../services/pets";
 import { useAuth } from "../../hooks/useAuth";
 import { ErrorModal } from "../../components/modal/ErrorModal";
 import { ConfirmModal } from "../../components/modal/ConfirmModal";
+import { useToast } from "../../context/ToastContext";
 
 export default function EditPetPage() {
   const [loading, setLoading] = useState(false);
@@ -21,6 +22,7 @@ export default function EditPetPage() {
   const { id } = useParams();
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { showToast } = useToast();
 
   const handleOpenConfirm = (data: CreatePetFormData) => {
     setPendingData(data);
@@ -109,6 +111,7 @@ export default function EditPetPage() {
         id,
       );
       setShowConfirmModal(false);
+      showToast("Pet edited successfully!", "success");
       navigate(`/pet/${id}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to update pet");

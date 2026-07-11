@@ -1,11 +1,25 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router";
-import { PawPrint, Share2, Heart, Check, Pencil, Trash2 } from "lucide-react";
+import {
+  PawPrint,
+  Share2,
+  Heart,
+  Check,
+  Pencil,
+  Trash2,
+  CheckCircle,
+} from "lucide-react";
 import { PetCard } from "../components/layout/PetCard";
-import { fetchAllPets, fetchPetById, deletePet } from "../services/pets";
+import {
+  fetchAllPets,
+  fetchPetById,
+  deletePet,
+  updatePetAdoptionStatus,
+} from "../services/pets";
 import { type Pet } from "../types/pets";
 import { useAuth } from "../hooks/useAuth";
 import { ConfirmModal } from "../components/modal/ConfirmModal";
+import { useToast } from "../context/ToastContext";
 
 const DESCRIPTION_ROWS = (pet: Pet) => [
   [
@@ -33,6 +47,7 @@ export default function PetDetailsPage() {
   const [copied, setCopied] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const { showToast } = useToast();
 
   function isAvailable(pet: Pet) {
     return pet.adoptionStatus.toLowerCase() === "available";
@@ -43,12 +58,42 @@ export default function PetDetailsPage() {
       setDeleting(true);
 
       await deletePet(pet.id, user.accessToken);
-
+      showToast("Pet deleted", "error");
       navigate("/");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to delete pet");
+      console.log(err instanceof Error ? err.message : "Failed to delete pet");
     } finally {
       setDeleting(false);
+    }
+  }
+
+  async function handleAdoptionStatus() {
+    if (!pet || !user?.accessToken) return;
+
+    const isCurrentlyAvailable =
+      pet.adoptionStatus.toLowerCase() === "available";
+
+    const newStatus = isCurrentlyAvailable ? "Adopted" : "Available";
+
+    try {
+      await updatePetAdoptionStatus(pet.id, user.accessToken, newStatus);
+
+      setPet((current) =>
+        current
+          ? {
+              ...current,
+              adoptionStatus: newStatus,
+            }
+          : current,
+      );
+
+      if (newStatus === "Adopted") {
+        showToast(`${pet.name} was adopted`, "success");
+      } else {
+        showToast(`${pet.name} was called back for adoption`, "error");
+      }
+    } catch (err) {
+      showToast("Something went wrong updating adoption status", "error");
     }
   }
 
@@ -212,13 +257,26 @@ export default function PetDetailsPage() {
 
             {isOwner && isLoggedIn && (
               <>
-                <button
-                  type="button"
-                  className="btn-primary btn-lg btn-full gap-2"
-                >
-                  <Heart size={16} />
-                  Mark {pet.name} as adopted
-                </button>
+                {isAvailable(pet) ? (
+                  <button
+                    type="button"
+                    className="btn-primary btn-lg btn-full gap-2"
+                    onClick={handleAdoptionStatus}
+                  >
+                    <Heart size={16} />
+                    Mark {pet.name} as adopted
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    className="btn-outline btn-lg btn-full gap-2"
+                    onClick={handleAdoptionStatus}
+                  >
+                    <CheckCircle size={16} />
+                    Mark {pet.name} as available
+                  </button>
+                )}
+
                 <div>
                   <div className="flex gap-3">
                     <Link to={`/manage/pets/${pet.id}/edit`} className="flex-1">
@@ -257,7 +315,7 @@ export default function PetDetailsPage() {
                 key={relatedPet.id}
                 pet={relatedPet}
                 badge={{
-                  label: isAvailable(relatedPet) ? "Available" : "Adopted out",
+                  label: isAvailable(relatedPet) ? "Available" : "Adopted",
                   className: isAvailable(relatedPet)
                     ? "bg-(--color-success) text-white"
                     : "bg-(--color-text-muted) text-white",

@@ -40,29 +40,15 @@ export type CreatePetFormData = {
 };
 
 export type CreatePetPayload = {
-  name: string;
-  breed: string;
-  age: number;
-  size: string;
-  color: string;
-  description: string;
-  species: string;
-  gender: string;
-  location: string;
-  adoptionStatus: string;
-  image?: { url: string; alt?: string };
-};
-export type EditPetPayload = {
-  id: string;
-  name: string;
-  breed: string;
-  age: number;
-  size: string;
-  color: string;
-  description: string;
-  species: string;
-  gender: string;
-  location: string;
-  adoptionStatus: string;
+  name?: string;
+  breed?: string;
+  age?: number;
+  size?: string;
+  color?: string;
+  description?: string;
+  species?: string;
+  gender?: string;
+  location?: string;
+  adoptionStatus?: string;
   image?: { url: string; alt?: string };
 };
