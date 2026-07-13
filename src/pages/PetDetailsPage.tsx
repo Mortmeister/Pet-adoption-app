@@ -20,6 +20,7 @@ import { type Pet } from "../types/pets";
 import { useAuth } from "../hooks/useAuth";
 import { ConfirmModal } from "../components/modal/ConfirmModal";
 import { useToast } from "../context/ToastContext";
+import { PetDetailsPageSkeleton } from "../components/Skeleton/PetDetailsSkeleton";
 
 const DESCRIPTION_ROWS = (pet: Pet) => [
   [
@@ -49,6 +50,10 @@ export default function PetDetailsPage() {
   const [deleting, setDeleting] = useState(false);
   const { showToast } = useToast();
   const [showAdoptionModal, setShowAdoptionModal] = useState(false);
+  const [showInterestModal, setShowInterestModal] = useState(false);
+  const [interestSentPetId, setInterestSentPetId] = useState<string | null>(
+    null,
+  );
 
   function isAvailable(pet: Pet) {
     return pet.adoptionStatus.toLowerCase() === "available";
@@ -99,7 +104,15 @@ export default function PetDetailsPage() {
     }
   }
 
+  function handleNotifyOwner() {
+    if (pet) {
+      setInterestSentPetId(pet.id);
+    }
+    showToast("Owner notified", "success");
+  }
+
   const isOwner = pet?.owner.name === user?.name;
+  const interestSent = interestSentPetId === pet?.id;
 
   useEffect(() => {
     if (!id) {
@@ -149,11 +162,7 @@ export default function PetDetailsPage() {
   };
 
   if (loading) {
-    return (
-      <p className="px-6 py-20 text-center text-(--color-text-muted)">
-        Loading pet details...
-      </p>
-    );
+    return <PetDetailsPageSkeleton />;
   }
 
   if (!pet) {
@@ -302,6 +311,20 @@ export default function PetDetailsPage() {
                 </div>
               </>
             )}
+
+            {!isOwner && isAvailable(pet) && (
+              <button
+                type="button"
+                disabled={interestSent}
+                onClick={() => setShowInterestModal(true)}
+                className="btn-primary btn-lg btn-full gap-2 disabled:cursor-default disabled:opacity-60"
+              >
+                {interestSent ? <Check size={16} /> : <Heart size={16} />}
+                {interestSent
+                  ? `Inquiry sent for ${pet.name}`
+                  : `Interested in adopting ${pet.name}?`}
+              </button>
+            )}
           </div>
         </div>
       </section>
@@ -348,6 +371,18 @@ export default function PetDetailsPage() {
             setShowAdoptionModal(false);
           }}
           onCancel={() => setShowAdoptionModal(false)}
+        />
+      )}
+      {showInterestModal && (
+        <ConfirmModal
+          title={`Interested in adopting ${pet.name}?`}
+          message={`Confirming will send a notification to ${pet.owner.name} letting them know you're interested in adopting ${pet.name}. Are you sure you want to continue?`}
+          confirmText="Yes, notify owner"
+          onConfirm={() => {
+            handleNotifyOwner();
+            setShowInterestModal(false);
+          }}
+          onCancel={() => setShowInterestModal(false)}
         />
       )}
     </>

@@ -1,4 +1,4 @@
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate, Link } from "react-router-dom";
 import { PawPrint, Menu } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
@@ -17,14 +17,14 @@ export default function Header() {
   return (
     <header className="navbar">
       <div className="navbar-inner">
-        <NavLink to="/" className="flex items-center gap-4 navbar-logo">
+        <Link to="/" className="flex items-center gap-4 navbar-logo">
           <PawPrint
             size={20}
             className="text-(--color-primary) "
             aria-hidden="true"
           />
           Pet Adoption
-        </NavLink>
+        </Link>
         <nav
           className="hidden md:flex items-center gap-5 text-sm"
           aria-label="Main navigation"
@@ -71,7 +71,10 @@ export default function Header() {
               <NavLink to="/" onClick={() => setIsMenuOpen(false)}>
                 Browse
               </NavLink>
-              <NavLink to="/profile" onClick={() => setIsMenuOpen(false)}>
+              <NavLink
+                to="/manage/pets/create"
+                onClick={() => setIsMenuOpen(false)}
+              >
                 Add Pet
               </NavLink>
               <NavLink to="/profile" onClick={() => setIsMenuOpen(false)}>

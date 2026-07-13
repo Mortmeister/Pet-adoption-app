@@ -4,12 +4,14 @@ import { useState } from "react";
 import { registerRequest } from "../../services/authentication";
 import { useForm } from "react-hook-form";
 import { type RegisterFormData } from "../../types/authentication";
+import { useToast } from "../../context/ToastContext";
 
 export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showOptional, setShowOptional] = useState(false);
   const navigate = useNavigate();
+  const { showToast } = useToast();
 
   const {
     register,
@@ -33,6 +35,7 @@ export default function RegisterPage() {
       if (!apiData.banner?.url) delete apiData.banner;
 
       await registerRequest(apiData);
+      showToast("New user created", "success");
       navigate("/auth/login");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");

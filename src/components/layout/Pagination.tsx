@@ -16,24 +16,24 @@ export function Pagination({
   const safePage = Math.min(Math.max(page, 1), totalPages);
 
   return (
-    <div className="mt-10 flex flex-wrap items-center justify-center gap-2">
+    <div className="mt-10 flex flex-nowrap items-center justify-center gap-1.5 sm:gap-2">
       <button
         type="button"
         onClick={() => onPageChange(Math.max(1, safePage - 1))}
         disabled={safePage === 1}
-        className="btn-outline flex items-center gap-1 disabled:cursor-default disabled:opacity-40"
+        className="btn-outline flex shrink-0 items-center gap-1 px-2.5 py-2 text-xs disabled:cursor-default disabled:opacity-40 sm:px-4 sm:text-sm"
       >
         <ChevronLeft size={14} />
-        Prev
+        <span className="hidden sm:inline">Prev</span>
       </button>
-
       {Array.from({ length: totalPages }, (_, index) => index + 1).map(
         (pageNumber) => {
           const isActive = pageNumber === safePage;
           const showPage =
             pageNumber === 1 ||
             pageNumber === totalPages ||
-            Math.abs(pageNumber - safePage) <= 1;
+            pageNumber === safePage ||
+            pageNumber === safePage - 1;
           const showEllipsisBefore =
             pageNumber === safePage - 2 && safePage > 3;
           const showEllipsisAfter =
@@ -43,7 +43,7 @@ export function Pagination({
             return (
               <span
                 key={`ellipsis-${pageNumber}`}
-                className="px-1 text-sm text-(--color-text-muted)"
+                className="shrink-0 px-0.5 text-sm text-(--color-text-muted) sm:px-1"
               >
                 …
               </span>
@@ -75,7 +75,7 @@ export function Pagination({
         disabled={safePage === totalPages}
         className="btn-outline flex items-center gap-1 disabled:cursor-default disabled:opacity-40"
       >
-        Next
+        <span className="hidden sm:inline">Next</span>
         <ChevronRight size={14} />
       </button>
     </div>
