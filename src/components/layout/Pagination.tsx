@@ -21,6 +21,7 @@ export function Pagination({
         type="button"
         onClick={() => onPageChange(Math.max(1, safePage - 1))}
         disabled={safePage === 1}
+        aria-label="Previous page"
         className="btn-outline flex shrink-0 items-center gap-1 px-2.5 py-2 text-xs disabled:cursor-default disabled:opacity-40 sm:px-4 sm:text-sm"
       >
         <ChevronLeft size={14} />
@@ -57,6 +58,8 @@ export function Pagination({
               key={pageNumber}
               type="button"
               onClick={() => onPageChange(pageNumber)}
+              aria-label={`Page ${pageNumber}`}
+              aria-current={isActive ? "page" : undefined}
               className={`flex h-10 w-10 items-center justify-center rounded-lg border-[1.5px] text-sm transition-colors duration-150 ${
                 isActive
                   ? "border-(--color-primary) bg-(--color-primary) font-medium text-white"
@@ -73,6 +76,7 @@ export function Pagination({
         type="button"
         onClick={() => onPageChange(Math.min(totalPages, safePage + 1))}
         disabled={safePage === totalPages}
+        aria-label="Next page"
         className="btn-outline flex items-center gap-1 disabled:cursor-default disabled:opacity-40"
       >
         <span className="hidden sm:inline">Next</span>
