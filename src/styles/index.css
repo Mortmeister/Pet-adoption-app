@@ -3,8 +3,11 @@
 
 @layer base {
   :root {
+    /* 
+    --color-primary-hover: #cc5c34; */
     --color-primary: #e2683d;
-    --color-primary-hover: #cc5c34;
+    --color-primary: #c4542f;
+    --color-primary-hover: #a84828;
     --color-secondary: #6e4c63;
     --color-accent: #f4b942;
     --color-bg: #fbf3e7;
@@ -13,7 +16,8 @@
     --color-text: #3a2c28;
     --color-text-muted: #6e4c63;
     --color-text-subtle: #9b8880;
-    --color-success: #2d8a4e;
+    /* --color-success: #2d8a4e; */
+    --color-success: #267a42;
     --color-danger: #c0392b;
     --color-danger-hover: #a93226;
   }
