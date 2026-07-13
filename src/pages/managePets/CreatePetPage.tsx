@@ -113,12 +113,14 @@ export default function CreatePetPage() {
                       message: "Name must be at least 3 characters longs",
                     },
                     maxLength: {
-                      value: 15,
+                      value: 40,
                       message: "Name cannot be more than 15 characters longs",
                     },
                   })}
                 />
-                {errors.name && <p>{errors.name.message}</p>}
+                {errors.name && (
+                  <p className="form-error-msg">{errors.name.message}</p>
+                )}
               </div>
 
               <div className="form-group flex flex-1 flex-col">
@@ -130,18 +132,20 @@ export default function CreatePetPage() {
                   placeholder="Labrador"
                   className="w-full rounded-lg border border-(--color-border) bg-(--color-surface) px-3.5 py-2.5 text-sm text-(--color-text) placeholder:text-(--color-text-subtle) transition-colors duration-300 focus:border-(--color-primary) focus:outline-none"
                   {...register("breed", {
-                    required: "breed is required",
+                    required: "Breed is required",
                     minLength: {
                       value: 3,
                       message: "Breed must be at least 3 characters longs",
                     },
                     maxLength: {
-                      value: 30,
+                      value: 45,
                       message: "Breed cannot be more than 30 characters longs",
                     },
                   })}
                 />
-                {errors.breed && <p>{errors.breed.message}</p>}
+                {errors.breed && (
+                  <p className="form-error-msg">{errors.breed.message}</p>
+                )}
               </div>
             </div>
 
@@ -167,7 +171,9 @@ export default function CreatePetPage() {
                     },
                   })}
                 />
-                {errors.species && <p>{errors.species.message}</p>}
+                {errors.species && (
+                  <p className="form-error-msg">{errors.species.message}</p>
+                )}
               </div>
 
               <div className="form-group flex flex-1 flex-col">
@@ -182,7 +188,9 @@ export default function CreatePetPage() {
                   <option value="Female">Female</option>
                   <option value="Unknown">Unknown</option>
                 </select>
-                {errors.gender && <p>{errors.gender.message}</p>}
+                {errors.gender && (
+                  <p className="form-error-msg">{errors.gender.message}</p>
+                )}
               </div>
             </div>
             <div className="flex gap-4">
@@ -202,7 +210,9 @@ export default function CreatePetPage() {
                     max: { value: 50, message: "Age must be 50 or less" },
                   })}
                 />
-                {errors.age && <p>{errors.age.message}</p>}
+                {errors.age && (
+                  <p className="form-error-msg">{errors.age.message}</p>
+                )}
               </div>
 
               <div className="form-group flex flex-1 flex-col">
@@ -217,7 +227,9 @@ export default function CreatePetPage() {
                   <option value="Medium">Medium</option>
                   <option value="Large">Large</option>
                 </select>
-                {errors.size && <p>{errors.size.message}</p>}
+                {errors.size && (
+                  <p className="form-error-msg">{errors.size.message}</p>
+                )}
               </div>
             </div>
 
@@ -237,12 +249,14 @@ export default function CreatePetPage() {
                       message: "Color must be at least 3 characters longs",
                     },
                     maxLength: {
-                      value: 30,
+                      value: 45,
                       message: "Color cannot be more than 30 characters longs",
                     },
                   })}
                 />
-                {errors.color && <p>{errors.color.message}</p>}
+                {errors.color && (
+                  <p className="form-error-msg">{errors.color.message}</p>
+                )}
               </div>
 
               <div className="form-group flex flex-1 flex-col">
@@ -260,13 +274,15 @@ export default function CreatePetPage() {
                       message: "Location must be at least 3 characters longs",
                     },
                     maxLength: {
-                      value: 30,
+                      value: 50,
                       message:
                         "Location cannot be more than 30 characters longs",
                     },
                   })}
                 />
-                {errors.location && <p>{errors.location.message}</p>}
+                {errors.location && (
+                  <p className="form-error-msg">{errors.location.message}</p>
+                )}
               </div>
             </div>
 
@@ -282,7 +298,9 @@ export default function CreatePetPage() {
                   required: "Description is required",
                 })}
               />
-              {errors.description && <p>{errors.description.message}</p>}
+              {errors.description && (
+                <p className="form-error-msg">{errors.description.message}</p>
+              )}
             </div>
 
             <div className="form-group flex flex-col">
@@ -296,7 +314,9 @@ export default function CreatePetPage() {
                   required: "Image url is required",
                 })}
               />
-              {errors.image?.url && <p>{errors.image?.url.message}</p>}
+              {errors.image?.url && (
+                <p className="form-error-msg">{errors.image?.url.message}</p>
+              )}
               <p className="mt-1.5 text-xs text-(--color-text-muted)">
                 Paste a URL to preview the image on the right
               </p>

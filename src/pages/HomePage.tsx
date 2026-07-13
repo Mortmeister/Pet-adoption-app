@@ -1,5 +1,5 @@
 import { fetchPets, fetchAllPets } from "../services/pets";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 import { type Pet } from "../types/pets";
 import { PetCard } from "../components/layout/PetCard";
 import {
@@ -15,7 +15,7 @@ import {
   ArrowUpDown,
   type LucideIcon,
 } from "lucide-react";
-import { HomePageSkeleton } from "../components/layout/HomePageSkeleton";
+import { HomePageSkeleton } from "../components/Skeleton/HomePageSkeleton";
 import { useDebouncedValue } from "../hooks/useDebounce";
 import { filterPets } from "../utils/filterPets";
 import { Pagination } from "../components/layout/Pagination";
@@ -55,6 +55,7 @@ export default function HomePage() {
   const [page, setPage] = useState(1);
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("All");
   const [sortDate, setSortDate] = useState<"newest" | "oldest">("newest");
+  const petsGridRef = useRef<HTMLElement>(null);
   const isFiltered =
     speciesFilter !== "All" ||
     sizeFilter !== "All" ||
@@ -210,7 +211,7 @@ export default function HomePage() {
                 Over {getAvailablePetsLength} pets need a home
               </span>
             </div>
-            <h1 className="mb-4 line-clamp-3 font-bold leading-tight text-(--color-text)">
+            <h1 className="mb-4 text-4xl font-bold leading-none tracking-tight text-(--color-text) md:text-5xl lg:text-[3.5rem]">
               Find your new
               <br />
               best friend
@@ -220,7 +221,13 @@ export default function HomePage() {
               listings and give them the home they deserve.
             </p>
             <div className="flex flex-wrap items-center gap-3">
-              <button className="btn-primary flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() =>
+                  petsGridRef.current?.scrollIntoView({ behavior: "smooth" })
+                }
+                className="btn-primary flex items-center gap-2"
+              >
                 <PawPrint size={"16px"} />
                 Browse pets
               </button>
@@ -394,9 +401,9 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="px-6 pb-12">
+      <section ref={petsGridRef} className="px-6 pb-12">
         <div className="mx-auto max-w-275">
-          <div className="mb-6 flex items-center justify-between">
+          <div className="mb-6 flex items-center justify-between flex-wrap">
             <div className="flex items-center gap-3">
               <h2 className="leading-tight font-bold text-(--color-text)">
                 Available pets

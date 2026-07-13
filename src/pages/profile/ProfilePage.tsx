@@ -9,6 +9,7 @@ import { type Pet } from "../../types/pets";
 import { ProfilePetCard } from "../../components/layout/ProfilePetCard";
 import { EditProfileModal } from "../../components/modal/EditProfileModal";
 import { useToast } from "../../context/ToastContext";
+import { ProfilePageSkeleton } from "../../components/Skeleton/ProfilePageSkeleton";
 
 type ListingFilter = "All" | "Available" | "Adopted";
 
@@ -110,11 +111,7 @@ export default function ProfilePage() {
   };
 
   if (loading) {
-    return (
-      <p className="px-6 py-10 text-center text-sm text-(--color-text-muted)">
-        Loading profile...
-      </p>
-    );
+    return <ProfilePageSkeleton />;
   }
 
   if (error || !profile) {
@@ -162,7 +159,7 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          <div className="mt-3 flex items-start justify-between">
+          <div className="mt-3 flex items-start justify-between flex-wrap gap-3 sm:gap-0">
             <div>
               <h1 className="mb-0.5 text-2xl font-bold text-(--color-text)">
                 {profile.name}
