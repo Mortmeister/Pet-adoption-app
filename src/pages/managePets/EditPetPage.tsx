@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import { Check } from "lucide-react";
+import { Check, ChevronDown } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { type CreatePetFormData } from "../../types/pets";
 import { fetchPetById } from "../../services/pets";
@@ -150,7 +150,7 @@ export default function EditPetPage() {
                 <input
                   type="text"
                   placeholder="Buddy"
-                  className="w-full rounded-lg border border-(--color-border) bg-(--color-surface) px-3.5 py-2.5 text-sm text-(--color-text) placeholder:text-(--color-text-subtle) transition-colors duration-300 focus:border-(--color-primary) focus:outline-none"
+                  className="form-input"
                   {...register("name", {
                     required: "Name is required",
                     minLength: {
@@ -175,7 +175,7 @@ export default function EditPetPage() {
                 <input
                   type="text"
                   placeholder="Labrador"
-                  className="w-full rounded-lg border border-(--color-border) bg-(--color-surface) px-3.5 py-2.5 text-sm text-(--color-text) placeholder:text-(--color-text-subtle) transition-colors duration-300 focus:border-(--color-primary) focus:outline-none"
+                  className="form-input"
                   {...register("breed", {
                     required: "Breed is required",
                     minLength: {
@@ -202,7 +202,7 @@ export default function EditPetPage() {
                 <input
                   type="text"
                   placeholder="Dog"
-                  className="w-full rounded-lg border border-(--color-border) bg-(--color-surface) px-3.5 py-2.5 text-sm text-(--color-text) placeholder:text-(--color-text-subtle) transition-colors duration-300 focus:border-(--color-primary) focus:outline-none"
+                  className="form-input"
                   {...register("species", {
                     required: "Species is required",
                     minLength: {
@@ -225,14 +225,20 @@ export default function EditPetPage() {
                 <label className="mb-1.5 block text-sm font-medium text-(--color-text)">
                   Gender <span className="text-(--color-danger)">*</span>
                 </label>
-                <select
-                  className={`cursor-pointer w-full rounded-lg border border-(--color-border) bg-(--color-surface) px-3.5 py-2.5 text-sm text-(--color-text) placeholder:text-(--color-text-subtle) transition-colors duration-300 focus:border-(--color-primary) focus:outline-none"`}
-                  {...register("gender", { required: "Gender is required" })}
-                >
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
-                  <option value="Unknown">Unknown</option>
-                </select>
+                <div className="flex justify-between relative">
+                  <select
+                    className="form-input appearance-none cursor-pointer"
+                    {...register("gender", { required: "Gender is required" })}
+                  >
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Unknown">Unknown</option>
+                  </select>
+                  <ChevronDown
+                    size={16}
+                    className="pointer-events-none absolute right-3 top-3 text-(--color-text-muted)"
+                  />
+                </div>
                 {errors.gender && (
                   <p className="form-error-msg">{errors.gender.message}</p>
                 )}
@@ -248,7 +254,7 @@ export default function EditPetPage() {
                   min="0"
                   max="50"
                   placeholder="2"
-                  className="w-full rounded-lg border border-(--color-border) bg-(--color-surface) px-3.5 py-2.5 text-sm text-(--color-text) placeholder:text-(--color-text-subtle) transition-colors duration-300 focus:border-(--color-primary) focus:outline-none"
+                  className="form-input"
                   {...register("age", {
                     required: "Age is required",
                     min: { value: 0, message: "Age must be 0 or greater" },
@@ -264,14 +270,20 @@ export default function EditPetPage() {
                 <label className="mb-1.5 block text-sm font-medium text-(--color-text)">
                   Size <span className="text-(--color-danger)">*</span>
                 </label>
-                <select
-                  className={`cursor-pointer w-full rounded-lg border border-(--color-border) bg-(--color-surface) px-3.5 py-2.5 text-sm text-(--color-text) placeholder:text-(--color-text-subtle) transition-colors duration-300 focus:border-(--color-primary) focus:outline-none"`}
-                  {...register("size", { required: "Size is required" })}
-                >
-                  <option value="Small">Small</option>
-                  <option value="Medium">Medium</option>
-                  <option value="Large">Large</option>
-                </select>
+                <div className="flex justify-between relative">
+                  <select
+                    className="form-input appearance-none cursor-pointer"
+                    {...register("size", { required: "Size is required" })}
+                  >
+                    <option value="Small">Small</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Large">Large</option>
+                  </select>
+                  <ChevronDown
+                    size={16}
+                    className="pointer-events-none absolute right-3 top-3 text-(--color-text-muted)"
+                  />
+                </div>
                 {errors.size && (
                   <p className="form-error-msg">{errors.size.message}</p>
                 )}
@@ -286,7 +298,7 @@ export default function EditPetPage() {
                 <input
                   type="text"
                   placeholder="Red"
-                  className="w-full rounded-lg border border-(--color-border) bg-(--color-surface) px-3.5 py-2.5 text-sm text-(--color-text) placeholder:text-(--color-text-subtle) transition-colors duration-300 focus:border-(--color-primary) focus:outline-none"
+                  className="form-input"
                   {...register("color", {
                     required: "Color is required",
                     minLength: {
@@ -311,7 +323,7 @@ export default function EditPetPage() {
                 <input
                   type="text"
                   placeholder="Oslo"
-                  className="w-full rounded-lg border border-(--color-border) bg-(--color-surface) px-3.5 py-2.5 text-sm text-(--color-text) placeholder:text-(--color-text-subtle) transition-colors duration-300 focus:border-(--color-primary) focus:outline-none"
+                  className="form-input"
                   {...register("location", {
                     required: "Location is required",
                     minLength: {
@@ -354,7 +366,7 @@ export default function EditPetPage() {
               </label>
               <input
                 type="url"
-                className="w-full rounded-lg border border-(--color-border) bg-(--color-surface) px-3.5 py-2.5 text-sm text-(--color-text) placeholder:text-(--color-text-subtle) transition-colors duration-300 focus:border-(--color-primary) focus:outline-none"
+                className="form-input"
                 {...register("image.url", {
                   required: "Image url is required",
                 })}
@@ -372,7 +384,7 @@ export default function EditPetPage() {
               </label>
               <input
                 type="text"
-                className="w-full rounded-lg border border-(--color-border) bg-(--color-surface) px-3.5 py-2.5 text-sm text-(--color-text) placeholder:text-(--color-text-subtle) transition-colors duration-300 focus:border-(--color-primary) focus:outline-none"
+                className="form-input"
                 {...register("image.alt", {})}
               />
             </div>

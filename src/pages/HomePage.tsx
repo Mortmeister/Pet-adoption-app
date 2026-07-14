@@ -274,7 +274,7 @@ export default function HomePage() {
       </section>
 
       <section className="w-full border-y border-(--color-border) bg-(--color-surface) px-6 py-10 justify-items-center">
-        <div className="grid w-full grid-cols-2 gap-6 md:grid-cols-4 max-w-275">
+        <div className="grid w-full grid-cols-2 gap-6 md:grid-cols-4 max-w-275 mx-auto">
           {[
             { value: `${getAvailablePetsLength}`, label: "Pets available" },
             { value: `${getAdoptedPetsLength}`, label: "Adopted this month" },
@@ -282,7 +282,7 @@ export default function HomePage() {
             { value: "100%", label: "Free to browse" },
           ].map(({ value, label }) => (
             <div key={label} className="text-center">
-              <p className="mb-1 font-bold leading-none text-(--color-primary) font-heading text-3xl">
+              <p className="mb-1 font-bold leading-none text-(--color-primary) font-heading text-4xl">
                 {value}
               </p>
               <p className="text-[13px] text-(--color-text-muted)">{label}</p>

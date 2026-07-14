@@ -173,3 +173,7 @@ a.active {
 .form-error-msg {
   color: var(--color-danger);
 }
+
+.form-input {
+  @apply w-full rounded-lg border border-(--color-border) bg-(--color-surface) px-3.5 py-2.5 text-sm text-(--color-text) transition-colors duration-300 focus:border-(--color-primary) focus:outline-none;
+}
