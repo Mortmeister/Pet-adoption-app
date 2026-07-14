@@ -54,6 +54,10 @@ a.active {
   color: var(--color-primary);
 }
 
+.font-heading {
+  font-family: "Fraunces", serif;
+}
+
 /* Buttons */
 .btn,
 .btn-primary,
@@ -132,14 +136,14 @@ a.active {
 }
 
 .navbar-inner {
-  @apply max-w-6xl mx-auto px-6 h-14 flex items-center justify-between;
+  @apply max-w-6xl mx-auto px-6 h-18 flex items-center justify-between;
 }
 
 .navbar-logo {
   @apply flex items-center gap-2 no-underline;
   font-family: "Fraunces", serif;
   font-weight: 700;
-  font-size: 1.125rem;
+  font-size: 1.55rem;
   color: var(--color-text);
 }
 
@@ -149,9 +153,8 @@ a.active {
 
 .navbar-link {
   @apply transition-colors duration-150;
-
+  font-size: 1rem;
   color: var(--color-text);
-
   font-weight: 500;
 }
 

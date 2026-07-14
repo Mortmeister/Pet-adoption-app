@@ -1,4 +1,4 @@
-import { PawPrint } from "lucide-react";
+import { PawPrint, Pencil, Trash2 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { type Pet } from "../../types/pets";
 
@@ -50,6 +50,7 @@ export function ProfilePetCard({ pet, badge, onDelete }: ProfilePetCardProps) {
               to={`/manage/pets/${pet.id}/edit`}
               className="btn-outline flex-1 px-0 py-1.25 text-center text-xs"
             >
+              <Pencil size={14} />
               Edit
             </Link>
 
@@ -58,6 +59,7 @@ export function ProfilePetCard({ pet, badge, onDelete }: ProfilePetCardProps) {
               onClick={() => onDelete(pet.id)}
               className="btn-danger flex-1 px-0 py-1.25 text-xs"
             >
+              <Trash2 size={14} />
               Delete
             </button>
           </div>
