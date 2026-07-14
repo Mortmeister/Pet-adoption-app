@@ -106,7 +106,10 @@ export default function ProfilePage() {
       setMyPets((current) => current.filter((pet) => pet.id !== petId));
       showToast("Pet deleted", "error");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong");
+      showToast(
+        err instanceof Error ? err.message : "Something went wrong",
+        "error",
+      );
     }
   };
 

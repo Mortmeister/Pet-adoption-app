@@ -8,6 +8,7 @@ import {
 } from "../../types/authentication";
 import { updateProfile } from "../../services/profile";
 import { useAuth } from "../../hooks/useAuth";
+import { useToast } from "../../context/ToastContext";
 
 interface EditProfileModalProps {
   profile: Profile;
@@ -21,6 +22,7 @@ export function EditProfileModal({
   onUpdated,
 }: EditProfileModalProps) {
   const { user } = useAuth();
+  const { showToast } = useToast();
 
   const { register, handleSubmit, reset } = useForm<EditProfileFormData>({
     defaultValues: {
@@ -66,7 +68,10 @@ export function EditProfileModal({
         onUpdated(response.data);
       }
     } catch (err) {
-      console.error(err);
+      showToast(
+        err instanceof Error ? err.message : "Failed to update profile",
+        "error",
+      );
     }
   };
 

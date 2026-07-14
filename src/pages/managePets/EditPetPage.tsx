@@ -56,7 +56,6 @@ export default function EditPetPage() {
       try {
         const petResponse = await fetchPetById(petId);
         const petData = petResponse?.data;
-        console.log(petData);
         if (petData) {
           setPet(petData);
           reset({

@@ -67,7 +67,10 @@ export default function PetDetailsPage() {
       showToast("Pet deleted", "error");
       navigate("/");
     } catch (err) {
-      console.log(err instanceof Error ? err.message : "Failed to delete pet");
+      showToast(
+        err instanceof Error ? err.message : "Failed to delete pet",
+        "error",
+      );
     } finally {
       setDeleting(false);
     }
@@ -100,7 +103,6 @@ export default function PetDetailsPage() {
       }
     } catch (err) {
       showToast("Something went wrong updating adoption status", "error");
-      console.log(err);
     }
   }
 
