@@ -99,7 +99,7 @@ export default function Header() {
         {!isMenuOpen && (
           <button
             type="button"
-            className="flex h-10 w-10 items-center justify-center rounded-lg text-(--color-text) transition-colors hover:bg-(--color-bg) md:hidden"
+            className="flex h-10 w-10 items-center justify-center rounded-lg text-(--color-text) transition-colors md:hidden"
             onClick={() => setIsMenuOpen(true)}
             aria-label="Open menu"
             aria-expanded={isMenuOpen}
@@ -140,7 +140,7 @@ export default function Header() {
           <button
             type="button"
             onClick={closeMenu}
-            className="flex h-10 w-10 items-center justify-center rounded-lg text-(--color-text) transition-colors hover:bg-(--color-bg)"
+            className="flex h-10 w-10 items-center justify-center rounded-lg text-(--color-text) transition-colors cursor-pointer"
             aria-label="Close menu"
           >
             <X size={22} aria-hidden="true" />
@@ -191,14 +191,18 @@ export default function Header() {
             <NavLink
               to="/auth/login"
               onClick={closeMenu}
-              className="mt-4 w-full"
+              className="mt-2 w-full"
             >
               <button type="button" className="btn-outline btn-full gap-1.5">
                 <LogIn size={16} aria-hidden="true" />
                 Login
               </button>
             </NavLink>
-            <NavLink to="/auth/register" onClick={closeMenu} className="w-full">
+            <NavLink
+              to="/auth/register"
+              onClick={closeMenu}
+              className="w-full mt-2"
+            >
               <button type="button" className="btn-primary btn-full gap-1.5">
                 <UserPlus size={16} aria-hidden="true" />
                 Register
