@@ -135,7 +135,7 @@ export default function ProfilePage() {
 
   return (
     <div className="flex flex-1 flex-col">
-      <div className="relative h-50 overflow-hidden bg-(--color-secondary)">
+      <div className="relative h-100 overflow-hidden bg-(--color-secondary)">
         {bannerUrl && (
           <img src={bannerUrl} alt="" className="h-full w-full object-cover" />
         )}

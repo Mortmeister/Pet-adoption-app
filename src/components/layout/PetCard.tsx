@@ -34,7 +34,7 @@ export function PetCard({ pet, badge }: PetCardProps) {
 
       <div className="flex flex-1 flex-col gap-2 p-4">
         <div>
-          <p className="font-heading text-base font-semibold text-(--color-text)">
+          <p className="font-heading text-lg font-semibold text-(--color-text)">
             {pet.name}
           </p>
 

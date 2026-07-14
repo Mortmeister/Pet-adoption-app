@@ -36,7 +36,7 @@ export function ProfilePetCard({ pet, badge, onDelete }: ProfilePetCardProps) {
       </Link>
 
       <div className="px-3 py-2.5">
-        <p className="mb-0.5 font-heading text-sm font-semibold text-(--color-text)">
+        <p className="mb-0.5 font-heading text-lg font-semibold text-(--color-text)">
           {pet.name}
         </p>
 
