@@ -1,5 +1,4 @@
 const BASE_URL = import.meta.env.VITE_NOROFF_BASE_URL;
-console.log("BASE_URL:", BASE_URL);
 
 async function apiFetch<T>(
   endpoint: string,
