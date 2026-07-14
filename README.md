@@ -1,68 +1,90 @@
-## Pet Adoption App
+# Pet Adoption App
 
-This is my exam project, a responsive web app where people can browse pets that are available for adoption. There's also an admin side where logged in users can add, edit, and delete pet listings.
+This is my exam project in Frontend development year 2. The Pet Adoption App is a responsive web application where users can browse pets available for adoption. Registered users can create and manage their own pet listings by adding, editing, deleting, and updating adoption status.
 
-### What it does
+**Link to the live website:** [https://pet-adoption-firm.netlify.app/](https://pet-adoption-firm.netlify.app/)
 
-#### For visitors
+## What the app does
 
-Browse a list of adoptable pets
-Click on a pet to see more details (breed, age, size, colour, description)
-Search for a specific pet
-Share a link to a specific pet
+### For visitors
 
-#### For admins:
+- Browse pets on the home page
+- Search and filter by species, size and availability
+- View pet details
+- Share a link to a specific pet
+- Express interest in adopting a pet
 
-Register and log in
-Add new pets to the list
-Edit existing pet info
-Delete pets
+### For logged-in users
 
-### Tech Stack
+- Register and log in
+- Create a profile with avatar and banner
+- Add new pets
+- Edit and delete your own pets
+- Mark pets as adopted or available again
 
-Framework: React
-Styling: Tailwind
-API:
-Hosting: Netlify
+## Tech stack
 
-### How to run
+- **React**
+- **TypeScript**
+- **Vite**
+- **Tailwind CSS**
+- **Lucide React**
+- **Noroff API**
+- **Netlify**
 
-Clone the repo:
+## How to run the project locally
 
-`git clone git@github.com:Mortmeister/Pet-adoption-app.git`
+### 1. Clone the repo
 
-Go into the project folder:
+```bash
+git clone git@github.com:Mortmeister/Pet-adoption-app.git
+cd Pet-adoption-app
+```
 
-`cd pet-adoption-app`
+### 2. Install dependencies
 
-### Install dependencies:
+```bash
+npm install
+```
 
-`npm install`
+### 3. Add environment variables
 
-Add your environment variables
+Create a `.env` file in the root folder:
 
-Run the project:
+```env
+VITE_NOROFF_BASE_URL=your_api_base_url
+VITE_NOROFF_API_KEY=your_api_key
+```
 
-`npm run dev`
+### 4. Start the dev server
 
-API
+```bash
+npm run dev
+```
 
-....
-Main endpoints used:
+Open the URL shown in the terminal (`http://localhost`).
 
-GET /pets – get all pets
-GET /pets/:id – get one pet
-POST /pets – add a pet (admin only)
-PUT /pets/:id – edit a pet (admin only)
-DELETE /pets/:id – delete a pet (admin only)
-POST /auth/register – register as admin
-POST /auth/login – log in as admin
+### Other useful commands
 
-Project Planning
+```bash
+npm run build
+npm run preview
+npm run lint
+```
 
-Kanban board:
-Roadmap / Gantt chart:
+## AI Assistance
 
-Design
+AI tools, primarily ChatGPT, were used throughout the project as a learning resource. It was used to clarify concepts, discuss implementation approaches, debugging, and provide general guidance during development.
 
-Figma file:
+Examples of AI-assisted tasks include:
+
+- Clarifying React, TypeScript, and Tailwind concepts
+- Debugging
+- Discussing structures, state management, and code organisation
+- Brainstorming UI/UX ideas
+- Reviewing accessibility considerations
+- Explaining React concepts when encountering unfamiliar behaviour
+- Assisting with documentation and pull request descriptions
+- Generating generic text used in the design
+
+AI was used as a support rather than a code generation tool. All decisions, implementation, testing, and final code were completed independently. A detailed record of AI usage is included in the reflection report.
